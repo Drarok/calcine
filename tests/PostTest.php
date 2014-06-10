@@ -52,7 +52,6 @@ class PostTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException($expectedException, $expectedMessage);
         $post = new Post($pathname);
-        var_dump($post->getTitle());
     }
 
     /**
