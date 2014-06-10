@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<post>
+    <title>Some kind of post title</title>
+
+    <tag>News</tag>
+    <tag>Slugs</tag>
+    <tag>PHP</tag>
+
+    <slug>url-slug-here</slug>
+
+    <date>2014-06-10</date>
+
+    <body><![CDATA[# Heading 1
+
+Here is the body of your post. This block is parsed as Markdown.]]></body>
+</post>
