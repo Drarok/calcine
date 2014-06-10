@@ -2,7 +2,7 @@
 <data>
     <exception>
         <class>Calcine\Post\ParseException</class>
-        <message>Title header must have a value.</message>
+        <message>Date header must have a value.</message>
     </exception>
 
     <post>
