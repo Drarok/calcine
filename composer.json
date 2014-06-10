@@ -1,0 +1,21 @@
+{
+    "name": "zerifas/calcine",
+    "description": "A baked blog generator.",
+    "authors": [
+        {
+            "name": "Mat Gadd",
+            "email": "mat@zerifas.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Calcine\\": "src/Calcine"
+        }
+    },
+    "require": {
+        "erusev/parsedown-extra": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    }
+}
