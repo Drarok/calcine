@@ -132,7 +132,7 @@ class Post
 
             if (! preg_match('/^([a-zA-Z]+): *(.*)$/', $line, $matches)) {
                 throw new Post\ParseException(sprintf(
-                    'Invalid header line in %s: \'%s\'',
+                    'Invalid header line in %s: \'%s\'.',
                     basename($pathname),
                     $line
                 ));
@@ -143,7 +143,8 @@ class Post
 
             if (! array_key_exists($name, $data)) {
                 throw new Post\ParseException(sprintf(
-                    'Unknown header: \'%s\'',
+                    'Unknown header in %s: \'%s\'.',
+                    basename($pathname),
                     $name
                 ));
             }
@@ -165,6 +166,10 @@ class Post
             $body .= fread($file, 1024);
         }
         $this->body = trim($body);
+
+        if (! $this->body) {
+            throw new Post\ParseException('Body is empty or missing.');
+        }
     }
 
     protected function processHeader($name, $value)
@@ -194,7 +199,7 @@ class Post
                 );
 
                 if (! count($this->tags)) {
-                    throw new Post\ParseException('Tags header must have a value.');
+                    throw new Post\ParseException('Tags header is invalid.');
                 }
                 break;
 
