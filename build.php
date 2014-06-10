@@ -17,6 +17,7 @@ $user = new User($config->get('user.name'), $config->get('user.email'));
 $site = new SiteBuilder(
     $user,
     $config->get('paths.posts'),
+    $config->get('paths.templates'),
     $config->get('paths.web')
 );
 $site->build();

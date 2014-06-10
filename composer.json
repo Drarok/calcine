@@ -13,7 +13,8 @@
         }
     },
     "require": {
-        "erusev/parsedown-extra": "dev-master"
+        "erusev/parsedown-extra": "dev-master",
+        "twig/twig": "1.*"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*"

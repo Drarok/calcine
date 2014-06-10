@@ -1,0 +1,15 @@
+{% extends 'template.html.twig' %}
+
+{% block title %}{{ post.getTitle }}{% endblock %}
+
+{% block content %}
+    <div class="post">
+        <h2>{{ post.getTitle }}</h2>
+        <div class="tags">
+            {% for tag in post.getTags %}
+                <a href="tags/{{ tag }}">{{ tag }}</a>
+            {% endfor %}
+        </div>
+        <div>{{ body | raw }}</div>
+    </div>
+{% endblock %}
