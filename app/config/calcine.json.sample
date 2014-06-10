@@ -1,0 +1,10 @@
+{
+    "user": {
+        "name": "Your Name",
+        "email": "you@yourdomain.tld"
+    },
+    "paths": {
+        "posts": "posts",
+        "web": "web"
+    }
+}

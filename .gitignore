@@ -1,3 +1,4 @@
-/app/
+/app/config/*.json
 /posts/
 /vendor/
+/web/
