@@ -1,5 +1,7 @@
 <?php
 
+$startTime = microtime(true);
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Calcine\Config\Parser;
@@ -20,4 +22,11 @@ $site = new SiteBuilder(
     $config->get('paths.templates'),
     $config->get('paths.web')
 );
-$site->build();
+$pageCount = $site->build();
+
+echo sprintf(
+    'Generated %d %s in %.3fs',
+    $pageCount,
+    $pageCount == 1 ? 'page' : 'pages',
+    microtime(true) - $startTime
+), PHP_EOL;

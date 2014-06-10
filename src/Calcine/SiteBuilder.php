@@ -65,9 +65,9 @@ class SiteBuilder
     }
 
     /**
-     * Build the site!
+     * Build the site, returning how many pages were built.
      *
-     * @return void
+     * @return int
      */
     public function build()
     {
@@ -78,6 +78,7 @@ class SiteBuilder
 
         $parsedown = new ParsedownExtra();
 
+        $pageCount = 0;
         foreach ($dir as $fileinfo) {
             if ($dir->isDot()) {
                 continue;
@@ -87,9 +88,9 @@ class SiteBuilder
                 continue;
             }
 
-            $post = new Post($fileinfo->getPathname());
+            ++$pageCount;
 
-            $parsedBody =
+            $post = new Post($fileinfo->getPathname());
 
             $template = $twig->render('post.html.twig', array(
                 'post' => $post,
@@ -97,5 +98,7 @@ class SiteBuilder
             ));
             file_put_contents(Path::join($this->webPath, $post->getSlug() . '.html'), $template);
         }
+
+        return $pageCount;
     }
 }
