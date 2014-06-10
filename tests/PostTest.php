@@ -9,11 +9,14 @@ class PostTest extends \PHPUnit_Framework_TestCase
     /**
      * Test the parsing of a post.
      *
+     * @param array  $expected Expected data, keyed on property name.
+     * @param string $pathname Pathname to the post file.
+     *
      * @return void
      *
-     * @dataProvider postDataProvider
+     * @dataProvider validPostsDataProvider
      */
-    public function testPost($expected, $pathname)
+    public function testValidPosts($expected, $pathname)
     {
         $post = new Post($pathname);
 
@@ -24,34 +27,88 @@ class PostTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected['body'], $post->getBody());
     }
 
-    public function postDataProvider()
+    /**
+     * Provider for testValidPosts.
+     *
+     * @return array
+     */
+    public function validPostsDataProvider()
     {
-        $result = array();
+        return $this->getDataProviderForDirectory(__DIR__ . '/posts/valid');
+    }
 
-        $dir = new \DirectoryIterator(__DIR__ . '/data/xml');
+    /**
+     * Test invalid post files.
+     *
+     * @param string $expectedException Expected exception class.
+     * @param string $expectedMessage   Expected exception message.
+     * @param string $pathname
+     *
+     * @return void
+     *
+     * @dataProvider invalidPostsDataProvider
+     */
+    public function testInvalidPosts($expectedException, $expectedMessage, $pathname)
+    {
+        $this->setExpectedException($expectedException, $expectedMessage);
+        $post = new Post($pathname);
+        var_dump($post->getTitle());
+    }
+
+    /**
+     * Provider for testInvalidPosts.
+     *
+     * @return array
+     */
+    public function invalidPostsDataProvider()
+    {
+        return $this->getDataProviderForDirectory(__DIR__ . '/posts/invalid');
+    }
+
+    protected function getDataProviderForDirectory($path)
+    {
+        $dir = new \DirectoryIterator($path);
 
         foreach ($dir as $fileinfo) {
             if ($dir->isDot()) {
                 continue;
             }
 
+            if ($fileinfo->getExtension() != 'xml') {
+                continue;
+            }
+
+            $postPathname = $path . '/' . $fileinfo->getBasename('.' . $fileinfo->getExtension()) . '.markdown';
+
             $xml = simplexml_load_file($fileinfo->getPathname());
 
+            if ($xml->exception) {
+                $result[] = array(
+                    (string) $xml->exception->class,
+                    (string) $xml->exception->message,
+                    $postPathname,
+                );
+
+                continue;
+            }
+
+            $post = $xml->post;
+
             $expected = array(
-                'title' => (string) $xml->title,
+                'title' => (string) $post->title,
                 'tags'  => array(),
-                'slug'  => (string) $xml->slug,
-                'date'  => (string) $xml->date,
-                'body'  => (string) $xml->body,
+                'slug'  => (string) $post->slug,
+                'date'  => (string) $post->date,
+                'body'  => (string) $post->body,
             );
 
-            foreach ($xml->tag as $tag) {
+            foreach ($post->tag as $tag) {
                 $expected['tags'][] = (string) $tag;
             }
 
             $result[] = array(
                 $expected,
-                __DIR__ . '/data/' . $fileinfo->getBasename('.' . $fileinfo->getExtension()) . '.markdown'
+                $postPathname,
             );
         }
 

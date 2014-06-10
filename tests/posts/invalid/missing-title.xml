@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<data>
+    <exception>
+        <class>Calcine\Post\ParseException</class>
+        <message>Title header must have a value.</message>
+    </exception>
+    <post>
+        <title />
+
+        <tag>News</tag>
+        <tag>Slugs</tag>
+        <tag>PHP</tag>
+
+        <slug>missing-title</slug>
+
+        <date>2014-06-10</date>
+
+        <body><![CDATA[# Heading
+
+Text.]]></body>
+    </post>
+</data>
