@@ -1,4 +1,6 @@
-; Title: Missing title
+InvalidHeader: Should throw an exception.
+
+Title: Missing title
 
 Tags: News, Slugs, PHP
 

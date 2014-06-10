@@ -1,4 +1,6 @@
-; Title: Missing title
+Totally invalid header line.
+
+Title: Missing title
 
 Tags: News, Slugs, PHP
 

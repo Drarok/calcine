@@ -1,8 +1,8 @@
-; Title: Missing title
+Title: Missing slug
 
 Tags: News, Slugs, PHP
 
-Slug: missing-title
+; Slug: missing-slug
 
 Date: 2014-06-10
 

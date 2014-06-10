@@ -2,6 +2,6 @@
 <data>
     <exception>
         <class>Calcine\Post\ParseException</class>
-        <message>Date header must have a value.</message>
+        <message>Body is empty or missing.</message>
     </exception>
 </data>
