@@ -1,10 +1,14 @@
 #!/bin/bash
 
-if [ ! -d app ]; then
-    mkdir app;
+if [ ! -d app/db ]; then
+    mkdir app/db;
 fi
 
-sqlite3 app/calcine.sqlite3 <<EOT
+if [ ! -d web ]; then
+    mkdir web;
+fi
+
+sqlite3 app/db/calcine.sqlite3 <<EOT
 CREATE TABLE posts (id INTEGER PRIMARY KEY AUTOINCREMENT, "date" TEXT, "slug" TEXT, "title" TEXT, "body" TEXT);
 CREATE INDEX "posts:date" ON posts (date);
 CREATE INDEX "posts:slug" ON posts (slug);
