@@ -12,7 +12,7 @@ class Post
     protected $title;
 
     /**
-     * Array of tag names.
+     * Array of Tag objects.
      *
      * @var array
      */
@@ -199,7 +199,7 @@ class Post
             case 'tags':
                 $this->tags = array_map(
                     function ($tag) {
-                        return trim($tag);
+                        return new Post\Tag(trim($tag));
                     },
                     explode(',', $value)
                 );
