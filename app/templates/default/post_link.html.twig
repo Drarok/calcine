@@ -1,6 +1,6 @@
 <a href="/{{ post.getSlug ~ '.html' }}">{{post.getDate }} - {{ post.getTitle }}</a>
 {% if tags %}
     {% for tag in tags %}
-        <a href="/tags/{{ tag.getSlug }}">{{ tag.getName }}</a>
+        <a href="/tags/{{ tag.getSlug ~ '.html' }}">{{ tag.getName }}</a>
     {% endfor %}
 {% endif %}

@@ -198,16 +198,8 @@ class SiteBuilder
                 'user'  => $this->user,
                 'tag'   => $tag,
             ));
-            $tagPath = Path::join($tagsRoot, $tag->getSlug());
 
-            if (! is_dir($tagPath) && ! mkdir($tagPath)) {
-                throw new \Exception(sprintf(
-                    'Cannot create \'%s\'.',
-                    $tagPath
-                ));
-            }
-
-            file_put_contents(Path::join($tagPath, 'index.html'), $template);
+            file_put_contents(Path::join($tagsRoot, $tag->getSlug() . '.html'), $template);
         }
 
         // Build the site index!
