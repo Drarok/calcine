@@ -4,10 +4,26 @@ namespace Calcine;
 
 class User
 {
+    /**
+     * User name.
+     *
+     * @var string
+     */
     protected $name;
 
+    /**
+     * User email address.
+     *
+     * @var string
+     */
     protected $email;
 
+    /**
+     * Constructor.
+     *
+     * @param string $name  User name.
+     * @param string $email User email address.
+     */
     public function __construct($name, $email)
     {
         $this->name = $name;
@@ -15,7 +31,7 @@ class User
     }
 
     /**
-     * Gets the value of name.
+     * Get user name.
      *
      * @return mixed
      */
@@ -25,7 +41,7 @@ class User
     }
 
     /**
-     * Gets the value of email.
+     * Get user email address.
      *
      * @return mixed
      */
@@ -33,4 +49,4 @@ class User
     {
         return $this->email;
     }
-    }
+}
