@@ -76,7 +76,7 @@ class Post
      */
     public function getSlug()
     {
-        return $this->slug;
+        return substr($this->date, 0, 10) . '-' . $this->slug;
     }
 
     /**
