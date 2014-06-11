@@ -22,11 +22,11 @@ $site = new SiteBuilder(
     $config->get('paths.templates'),
     $config->get('paths.web')
 );
-$pageCount = $site->build();
+$postCount = $site->build();
 
 echo sprintf(
-    'Generated %d %s in %.3fs',
-    $pageCount,
-    $pageCount == 1 ? 'page' : 'pages',
+    'Build %d %s in %.3fs',
+    $postCount,
+    $postCount == 1 ? 'post' : 'posts',
     microtime(true) - $startTime
 ), PHP_EOL;
