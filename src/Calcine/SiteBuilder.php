@@ -176,7 +176,7 @@ class SiteBuilder
         $tags = array();
         foreach ($this->tags as $name => $posts) {
             // Sort by date, descending.
-            krsort($posts, SORT_NATURAL);
+            krsort($posts);
             $tag = new Tag($name, $posts);
             $tags[$name] = $tag;
         }
@@ -196,5 +196,13 @@ class SiteBuilder
             ));
             file_put_contents(Path::join($tagsRoot, $tag->getSlug() . '.html'), $template);
         }
+
+        // Build the site index!
+        krsort($this->posts);
+        $template = $this->twig->render('index.html.twig', array(
+            'user'  => $this->user,
+            'posts' => $this->posts,
+        ));
+        file_put_contents(Path::join($this->webPath, 'index.html'), $template);
     }
 }

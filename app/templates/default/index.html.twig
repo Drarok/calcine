@@ -1,0 +1,11 @@
+{% extends 'template.html.twig' %}
+
+{% block title %}Index{% endblock %}
+
+{% block content %}
+    <ul class="post">
+        {% for post in posts %}
+            <li>{% include 'post_link.html.twig' with {'post': post, 'tags': post.getTags} %}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
