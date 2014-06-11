@@ -22,11 +22,21 @@ $site = new SiteBuilder(
     $config->get('paths.templates'),
     $config->get('paths.web')
 );
-$postCount = $site->build();
+$stats = $site->build();
 
 echo sprintf(
-    'Build %d %s in %.3fs',
-    $postCount,
-    $postCount == 1 ? 'post' : 'posts',
+    'Site built in %.3fs',
     microtime(true) - $startTime
+), PHP_EOL;
+
+echo sprintf(
+    'Built %d %s.',
+    $stats['posts'],
+    $stats['posts'] == 1 ? 'post' : 'posts'
+), PHP_EOL;
+
+echo sprintf(
+    'Built %d %s.',
+    $stats['indexes'],
+    $stats['indexes'] == 1 ? 'index' : 'indexes'
 ), PHP_EOL;

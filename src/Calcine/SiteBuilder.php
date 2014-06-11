@@ -95,9 +95,9 @@ class SiteBuilder
     }
 
     /**
-     * Build the site, returning how many posts were built.
+     * Build the site, returning how many pages of what type were built.
      *
-     * @return int
+     * @return array
      */
     public function build()
     {
@@ -112,7 +112,11 @@ class SiteBuilder
         $this->buildPosts();
         $this->buildIndexes();
 
-        return count($this->posts);
+        // Count the posts, and tags plus two: one for the site root index, one for the tags index.
+        return array(
+            'posts'   => count($this->posts),
+            'indexes' => count($this->tags) + 2,
+        );
     }
 
     /**
@@ -194,7 +198,16 @@ class SiteBuilder
                 'user'  => $this->user,
                 'tag'   => $tag,
             ));
-            file_put_contents(Path::join($tagsRoot, $tag->getSlug() . '.html'), $template);
+            $tagPath = Path::join($tagsRoot, $tag->getSlug());
+
+            if (! is_dir($tagPath) && ! mkdir($tagPath)) {
+                throw new \Exception(sprintf(
+                    'Cannot create \'%s\'.',
+                    $tagPath
+                ));
+            }
+
+            file_put_contents(Path::join($tagPath, 'index.html'), $template);
         }
 
         // Build the site index!
