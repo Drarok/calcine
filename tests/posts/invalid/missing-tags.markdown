@@ -4,7 +4,7 @@ Title: Missing date.
 
 Slug: missing-date
 
-Date: 2014-06-10
+Date: 2014-06-10 00:00:00
 
 Body:
 

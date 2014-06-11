@@ -4,8 +4,6 @@ namespace Calcine;
 
 class Post
 {
-    protected $state = 'header';
-
     /**
      * Post title.
      *
@@ -28,7 +26,7 @@ class Post
     protected $slug;
 
     /**
-     * Date string (yyyy-mm-dd).
+     * Date string (yyyy-mm-dd hh:mm:ss).
      *
      * @var string
      */
@@ -82,7 +80,7 @@ class Post
     }
 
     /**
-     * Get date string (yyyy-mm-dd).
+     * Get date string (yyyy-mm-dd hh:mm:ss).
      *
      * @return string
      */
@@ -172,6 +170,14 @@ class Post
         }
     }
 
+    /**
+     * Validate and store a header.
+     *
+     * @param string $name  Name of the header.
+     * @param string $value Value of the header.
+     *
+     * @return void
+     */
     protected function processHeader($name, $value)
     {
         $name = strtolower($name);
@@ -208,7 +214,7 @@ class Post
                 break;
 
             case 'date':
-                if (\DateTime::createFromFormat('Y-m-d', $value) === false) {
+                if (\DateTime::createFromFormat('Y-m-d H:i:s', $value) === false) {
                     throw new Post\ParseException(sprintf(
                         'Date header is invalid: \'%s\'',
                         $value
@@ -218,7 +224,7 @@ class Post
                 break;
 
             case 'body':
-                $this->state = 'body';
+                // Nothing to do for this tag, it's just a marker.
                 break;
 
             default:
