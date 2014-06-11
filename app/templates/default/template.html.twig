@@ -8,11 +8,8 @@
     <header>
         <nav>
             <ul>
-                <li>Link</li>
-                <li>Link</li>
-                <li>Link</li>
-                <li>Link</li>
-                <li>Link</li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/tags">Tags</a></li>
             </ul>
         </nav>
     </header>
@@ -22,7 +19,7 @@
     </section>
 
     <footer>
-        Copyright &copy; 2014 Zerifas.
+        Copyright &copy; 2014 <a href="mailto:{{ user.getEmail | url_encode(true) }}">{{ user.getName }}</a>.
     </footer>
 </body>
 </html>

@@ -1,0 +1,11 @@
+{% extends 'template.html.twig' %}
+
+{% block title %}Tags{% endblock %}
+
+{% block content %}
+    <ul class="tags">
+    {% for tag in tags %}
+        <li><a href="{{ tag.getSlug ~ '.html'}}">{{ tag.getName }} ({{ tag.getPosts | length }})</a></li>
+    {% endfor %}
+    </ul>
+{% endblock %}

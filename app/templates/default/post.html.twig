@@ -7,7 +7,7 @@
         <h2>{{ post.getTitle }}</h2>
         <div class="tags">
             {% for tag in post.getTags %}
-                <a href="tags/{{ tag }}">{{ tag }}</a>
+                <a href="tags/{{ tag.getSlug ~ '.html' }}">{{ tag.getName }}</a>
             {% endfor %}
         </div>
         <div>{{ body | raw }}</div>
