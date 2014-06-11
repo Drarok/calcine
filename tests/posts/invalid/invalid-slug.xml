@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<data>
+    <exception>
+        <class>Calcine\Post\ParseException</class>
+        <message>Slug header is invalid: 'Invalid Slug'.</message>
+    </exception>
+</data>

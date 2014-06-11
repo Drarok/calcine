@@ -210,6 +210,12 @@ class Post
                 break;
 
             case 'slug':
+                if (! preg_match('/^[a-z0-9-]+$/', $value)) {
+                    throw new Post\ParseException(sprintf(
+                        'Slug header is invalid: \'%s\'.',
+                        $value
+                    ));
+                }
                 $this->slug = $value;
                 break;
 
