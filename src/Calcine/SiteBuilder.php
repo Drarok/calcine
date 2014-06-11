@@ -84,7 +84,7 @@ class SiteBuilder
             throw new \Exception('Invalid posts path: \'' . $templatesPath . '\'');
         }
 
-        if (! is_dir($webPath)) {
+        if (! is_dir($webPath) && ! mkdir($webPath)) {
             throw new \Exception('Invalid web path: \'' . $webPath . '\'');
         }
 
