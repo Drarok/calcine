@@ -209,8 +209,10 @@ class SiteBuilder
             file_put_contents(Path::join($tagsRoot, $tag->getSlug() . '.html'), $template);
         }
 
-        // Build the site index!
+        // Reverse sort so newest posts are at the top.
         krsort($this->posts);
+
+        // Build the site index!
         $template = $this->twig->render('index.html.twig', array(
             'user'  => $this->user,
             'posts' => $this->posts,
