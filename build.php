@@ -6,6 +6,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Calcine\Config\Parser;
 use Calcine\Path;
+use Calcine\Path\PathService;
 use Calcine\SiteBuilder;
 use Calcine\User;
 use Calcine\Version;
@@ -16,12 +17,17 @@ $config = new Parser(Path::join(__DIR__, 'app', 'config', 'calcine.json'));
 
 $user = new User($config->get('user.name'), $config->get('user.email'));
 
-$site = new SiteBuilder(
-    $user,
+$pathService = new PathService(
     $config->get('paths.posts'),
     $config->get('paths.templates'),
     $config->get('paths.web')
 );
+
+$site = new SiteBuilder(
+    $user,
+    $pathService
+);
+
 $stats = $site->build();
 
 echo sprintf(

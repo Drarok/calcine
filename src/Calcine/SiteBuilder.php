@@ -2,6 +2,7 @@
 
 namespace Calcine;
 
+use Calcine\Path\PathService;
 use Calcine\Post\Tag;
 
 use ParsedownExtra;
@@ -18,25 +19,11 @@ class SiteBuilder
     protected $user;
 
     /**
-     * Path to the posts files.
+     * Path service.
      *
-     * @var string
+     * @var PathService
      */
-    protected $postsPath;
-
-    /**
-     * Path to the template files.
-     *
-     * @var string
-     */
-    protected $templatesPath;
-
-    /**
-     * Path to the web directory.
-     *
-     * @var string
-     */
-    protected $webPath;
+    protected $pathService;
 
     /**
      * Twig template renderer.
@@ -69,29 +56,13 @@ class SiteBuilder
     /**
      * Constructor.
      *
-     * @param User   $user          The user object.
-     * @param string $postsPath     Path to the posts files.
-     * @param string $templatesPath Path to the template files.
-     * @param string $webPath       Path to the web directory.
+     * @param User        $user        The user object.
+     * @param PathService $pathService Path generation service.
      */
-    public function __construct(User $user, $postsPath, $templatesPath, $webPath)
+    public function __construct(User $user, PathService $pathService)
     {
-        if (! is_dir($postsPath)) {
-            throw new \Exception('Invalid posts path: \'' . $postsPath . '\'');
-        }
-
-        if (! is_dir($templatesPath)) {
-            throw new \Exception('Invalid posts path: \'' . $templatesPath . '\'');
-        }
-
-        if (! is_dir($webPath) && ! mkdir($webPath)) {
-            throw new \Exception('Invalid web path: \'' . $webPath . '\'');
-        }
-
         $this->user = $user;
-        $this->postsPath = $postsPath;
-        $this->templatesPath = $templatesPath;
-        $this->webPath = $webPath;
+        $this->pathService = $pathService;
     }
 
     /**
@@ -104,7 +75,7 @@ class SiteBuilder
         $this->posts = array();
         $this->tags = array();
 
-        $loader = new Twig_Loader_Filesystem($this->templatesPath);
+        $loader = new Twig_Loader_Filesystem($this->pathService->getTemplatesPath());
         $this->twig = new Twig_Environment($loader);
 
         $this->parsedown = new ParsedownExtra();
@@ -126,7 +97,7 @@ class SiteBuilder
      */
     protected function buildPosts()
     {
-        $dir = new \DirectoryIterator($this->postsPath);
+        $dir = new \DirectoryIterator($this->pathService->getPostsPath());
 
         foreach ($dir as $fileinfo) {
             if ($dir->isDot()) {
@@ -148,7 +119,7 @@ class SiteBuilder
                 'post' => $post,
                 'body' => $this->parsedown->text($post->getBody()),
             ));
-            file_put_contents(Path::join($this->webPath, $post->getSlug() . '.html'), $template);
+            file_put_contents($this->pathService->getPath($post), $template);
 
             // Store the post in the posts and tags arrays for buildIndexes.
             $this->posts[$post->getSlug()] = $post;

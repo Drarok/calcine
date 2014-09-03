@@ -26,9 +26,9 @@ class Post
     protected $slug;
 
     /**
-     * Date string (yyyy-mm-dd hh:mm:ss).
+     * Date of the post.
      *
-     * @var string
+     * @var \DateTime
      */
     protected $date;
 
@@ -76,13 +76,13 @@ class Post
      */
     public function getSlug()
     {
-        return substr($this->date, 0, 10) . '-' . $this->slug;
+        return $this->slug;
     }
 
     /**
      * Get date string (yyyy-mm-dd hh:mm:ss).
      *
-     * @return string
+     * @return \DateTime
      */
     public function getDate()
     {
@@ -220,13 +220,14 @@ class Post
                 break;
 
             case 'date':
-                if (\DateTime::createFromFormat('Y-m-d H:i:s', $value) === false) {
+                $date = \DateTime::createFromFormat('Y-m-d H:i:s', $value);
+                if ($date === false) {
                     throw new Post\ParseException(sprintf(
                         'Date header is invalid: \'%s\'',
                         $value
                     ));
                 }
-                $this->date = $value;
+                $this->date = $date;
                 break;
 
             case 'body':
