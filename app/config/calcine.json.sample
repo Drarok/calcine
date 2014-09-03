@@ -4,7 +4,9 @@
         "email": "you@yourdomain.tld"
     },
     "paths": {
+        "templates": "app/templates/default",
         "posts": "posts",
-        "web": "web"
+        "web": "web",
+        "omit_extension": true
     }
 }
