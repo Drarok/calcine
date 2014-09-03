@@ -60,7 +60,7 @@ class SiteBuilder
     protected $tags = array();
 
     /**
-     * Array of posts, keyed on date.
+     * Array of posts, keyed on slug.
      *
      * @var array
      */
@@ -137,6 +137,8 @@ class SiteBuilder
                 continue;
             }
 
+            echo $fileinfo->getFilename(), PHP_EOL;
+
             // Parse the post file.
             $post = new Post($fileinfo->getPathname());
 
@@ -149,15 +151,20 @@ class SiteBuilder
             file_put_contents(Path::join($this->webPath, $post->getSlug() . '.html'), $template);
 
             // Store the post in the posts and tags arrays for buildIndexes.
-            $this->posts[$post->getDate()] = $post;
+            $this->posts[$post->getSlug()] = $post;
 
             foreach ($post->getTags() as $tag) {
                 if (! array_key_exists($tag->getName(), $this->tags)) {
                     $this->tags[$tag->getName()] = array();
                 }
-                $this->tags[$tag->getName()][$post->getDate()] = $post;
+                $this->tags[$tag->getName()][$post->getSlug()] = $post;
             }
         }
+
+        var_dump(array(
+            'posts' => count($this->posts),
+            'tags' => count($this->tags),
+        ));
     }
 
     /**
