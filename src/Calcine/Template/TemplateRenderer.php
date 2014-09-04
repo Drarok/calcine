@@ -4,6 +4,8 @@ namespace Calcine\Template;
 
 use Calcine\User;
 use Calcine\Path;
+use Calcine\Post;
+use Calcine\Post\Tag;
 
 use ParsedownExtra;
 
@@ -69,8 +71,10 @@ class TemplateRenderer
 
         $this->parsedown = new ParsedownExtra();
 
-        // $loader = new Twig_Loader_Filesystem($templatesPath);
-        $this->twig = new Twig_Environment(/*$loader*/);
+        $loader = new Twig_Loader_Filesystem();
+        $this->twig = new Twig_Environment($loader);
+
+        $this->setTheme('default');
     }
 
     /**
@@ -83,6 +87,17 @@ class TemplateRenderer
     public function setTheme($theme)
     {
         $this->theme = $theme;
+
+        $paths = array(
+            Path::join($this->templatesPath, $theme),
+        );
+
+        if ($theme != 'default') {
+            $paths[] = Path::join($this->templatesPath, 'default');
+        }
+
+        $this->twig->getLoader()->setPaths($paths);
+
         return $this;
     }
 
@@ -122,6 +137,46 @@ class TemplateRenderer
         return $postPathname;
     }
 
+    public function renderTag(Tag $tag)
+    {
+        $data = array(
+            'user'  => $this->user,
+            'tag'   => $tag,
+        );
+
+        $tagPathname = Path::join($this->webPath, 'tags', $tag->getSlug() . '.html');
+
+        $this->render('tag.html.twig', $data, $tagPathname);
+    }
+
+    public function renderTagsIndex(array $tags)
+    {
+        $data = array(
+            'user' => $this->user,
+            'tags' => $tags,
+        );
+
+        $tagsPathname = Path::join(
+            $this->webPath,
+            'tags',
+            'index.html'
+        );
+
+        $this->render('tags.html.twig', $data, $tagsPathname);
+    }
+
+    public function renderSiteIndex(array $posts)
+    {
+        $data = array(
+            'user'  => $this->user,
+            'posts' => $posts,
+        );
+
+        $indexPathname = Path::join($this->webPath, 'index.html');
+
+        $this->render('index.html.twig', $data, $indexPathname);
+    }
+
     /**
      * Render a Twig template to a file.
      *
@@ -133,11 +188,14 @@ class TemplateRenderer
      */
     protected function render($name, $data, $pathname)
     {
-        $templatePathname = $this->getTemplateFile($name);
-        // if ($templatePathname === false) {
-        //     throw new \Exception('');
-        // }
-        $template = $this->twig->render($pathname, $data);
+        $template = $this->twig->render($name, $data);
+
+        if (! is_dir($dirname = dirname($pathname))) {
+            if (! mkdir($dirname, 0755, true)) {
+                throw new \Exception('FAIL');
+            }
+        }
+
         file_put_contents($pathname, $template);
     }
 
@@ -170,17 +228,17 @@ class TemplateRenderer
     {
         // Look at the theme first.
         $paths = array(
-            Path::join($this->templatesPath, $this->theme),
+            $this->theme => Path::join($this->templatesPath, $this->theme),
         );
 
         // If the theme isn't default, look there next.
         if ($this->theme !== 'default') {
-            $paths[] = Path::join($this->templatesPath, 'default');
+            $paths['default'] = Path::join($this->templatesPath, 'default');
         }
 
-        foreach ($paths as $path) {
-            if (file_exists($pathname = Path::join($path, $name))) {
-                return $pathname;
+        foreach ($paths as $path => $pathname) {
+            if (file_exists(Path::join($pathname, $name))) {
+                return Path::join($path, $name);
             }
         }
 

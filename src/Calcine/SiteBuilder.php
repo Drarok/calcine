@@ -120,49 +120,40 @@ class SiteBuilder
      */
     protected function buildIndexes()
     {
-        $tagsRoot = Path::join($this->webPath, 'tags');
+        // Custom sort function for reverse date ordering.
+        $postsReverseDateSort = function (Post $a, Post $b) {
+            $dateA = $a->getDate();
+            $dateB = $b->getDate();
+            if ($dateA == $dateB) {
+                return 0;
+            }
+            return $dateA < $dateB ? 1 : -1;
+        };
 
-        if (! is_dir($tagsRoot) && ! mkdir($tagsRoot)) {
-            throw new \Exception('Cannot create \'' . $tagsRoot . '\'.');
-        }
-
-        // Sort by name.
+        // Sort tags by name.
         ksort($this->tags, SORT_NATURAL);
 
         // Convert the array of name => posts to real Tag objects.
         $tags = array();
         foreach ($this->tags as $name => $posts) {
             // Sort by date, descending.
-            krsort($posts);
+            uasort($posts, $postsReverseDateSort);
+
             $tag = new Tag($name, $posts);
             $tags[$name] = $tag;
         }
 
         // Build the tags index.
-        $template = $this->twig->render('tags.html.twig', array(
-            'user' => $this->user,
-            'tags' => $tags,
-        ));
-        file_put_contents(Path::join($tagsRoot, 'index.html'), $template);
+        $this->templateRenderer->renderTagsIndex($tags);
 
         // Now build each individual tag page.
         foreach ($tags as $tag) {
-            $template = $this->twig->render('tag.html.twig', array(
-                'user'  => $this->user,
-                'tag'   => $tag,
-            ));
-
-            file_put_contents(Path::join($tagsRoot, $tag->getSlug() . '.html'), $template);
+            $this->templateRenderer->renderTag($tag);
         }
 
         // Reverse sort so newest posts are at the top.
-        krsort($this->posts);
+        uasort($this->posts, $postsReverseDateSort);
 
-        // Build the site index!
-        $template = $this->twig->render('index.html.twig', array(
-            'user'  => $this->user,
-            'posts' => $this->posts,
-        ));
-        file_put_contents(Path::join($this->webPath, 'index.html'), $template);
+        $this->templateRenderer->renderSiteIndex($this->posts);
     }
 }
