@@ -111,6 +111,14 @@ class TemplateRenderer
         return $this->theme;
     }
 
+    public function copyAssets()
+    {
+        $assetsPath = Path::join(
+            $this->templatesPath,
+            $this->getTheme()
+        );
+    }
+
     /**
      * Render a post to the web directory, returning its pathname.
      *

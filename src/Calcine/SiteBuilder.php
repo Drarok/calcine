@@ -62,6 +62,7 @@ class SiteBuilder
 
         $this->buildPosts();
         $this->buildIndexes();
+        $this->templateRenderer->copyAssets();
 
         // Count the posts, and tags plus two: one for the site root index, one for the tags index.
         return array(
