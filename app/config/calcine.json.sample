@@ -6,7 +6,11 @@
     "paths": {
         "templates": "app/templates/default",
         "posts": "posts",
-        "web": "web",
-        "omit_extension": true
+        "web": "web"
+    },
+    "site": {
+        "theme": "default",
+        "title": "Site Title",
+        "description": "Site description is a little longer and wiser."
     }
 }
