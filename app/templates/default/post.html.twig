@@ -1,0 +1,15 @@
+<div class="blog-post">
+    <h3><a href="/{{ post.date|date('Y/m/d') ~ '/' ~ post.slug ~ '.html' }}">{{ post.title }}</a></h3>
+    <time datetime="{{ post.date|date(constant('DATE_RFC3339')) }}">{{ post.date|date('F dS, Y') }}</time>
+    <div class="blog-post-tags">
+
+    <div class="tags">
+        {% if tags %}
+            {% for tag in tags %}
+                <a href="/tags/{{ tag.slug ~ '.html' }}">{{ tag.name }}</a>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div>{{ body | raw }}</div>
+</div>
