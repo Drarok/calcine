@@ -4,6 +4,7 @@ namespace Calcine;
 
 use Calcine\Path\PathService;
 use Calcine\Post\Tag;
+use Calcine\Template\TemplateRenderer;
 
 use ParsedownExtra;
 use Twig_Environment;
@@ -17,6 +18,13 @@ class SiteBuilder
      * @var User
      */
     protected $user;
+
+    /**
+     * Template renderer service.
+     *
+     * @var TemplateRenderer
+     */
+    protected $templateRenderer;
 
     /**
      * Path service.
@@ -56,12 +64,14 @@ class SiteBuilder
     /**
      * Constructor.
      *
-     * @param User        $user        The user object.
-     * @param PathService $pathService Path generation service.
+     * @param User             $user             The user object.
+     * @param TemplateRenderer $templateRenderer Template renderer.
+     * @param PathService      $pathService      Path generation service.
      */
-    public function __construct(User $user, PathService $pathService)
+    public function __construct(User $user, TemplateRenderer $templateRenderer, PathService $pathService)
     {
         $this->user = $user;
+        $this->templateRenderer = $templateRenderer;
         $this->pathService = $pathService;
     }
 
