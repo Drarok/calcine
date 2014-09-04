@@ -1,6 +1,6 @@
-<a href="/{{ post.getSlug ~ '.html' }}">{{post.getDate }} - {{ post.getTitle }}</a>
+<a href="/{{ post.date|date('Y/m/d') ~ '/' ~ post.slug ~ '.html' }}">{{ post.date|date('Y-m-d') }} - {{ post.title }}</a>
 {% if tags %}
     {% for tag in tags %}
-        <a href="/tags/{{ tag.getSlug ~ '.html' }}">{{ tag.getName }}</a>
+        <a href="/tags/{{ tag.slug ~ '.html' }}">{{ tag.name }}</a>
     {% endfor %}
 {% endif %}
