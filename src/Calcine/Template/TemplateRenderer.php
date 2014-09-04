@@ -114,12 +114,19 @@ class TemplateRenderer
     public function copyAssets()
     {
         $assetsRootPaths = array(
-            'css' => Path::join($this->templatesPath, $this->getTheme(), 'css'),
-            'js'  => Path::join($this->templatesPath, $this->getTheme(), 'js'),
+            array(Path::join($this->templatesPath, $this->getTheme(), 'css'), 'css'),
+            array(Path::join($this->templatesPath, $this->getTheme(), 'js'), 'js'),
         );
 
-        foreach ($assetsRootPaths as $type => $root) {
-            $dir = new \DirectoryIterator($root);
+        if ($this->getTheme() != 'default') {
+            $assetsRootPaths[] = array(Path::join($this->templatesPath, 'default', 'css'), 'css');
+            $assetsRootPaths[] = array(Path::join($this->templatesPath, 'default', 'js'), 'js');
+        }
+
+        foreach ($assetsRootPaths as $pathInfo) {
+            list($path, $type) = $pathInfo;
+
+            $dir = new \DirectoryIterator($path);
 
             foreach ($dir as $fileInfo) {
                 if ($fileInfo->isDot()) {
@@ -140,8 +147,10 @@ class TemplateRenderer
                     }
                 }
 
-                echo $source, ' => ', $destination, PHP_EOL;
-                copy($source, $destination);
+                if (! file_exists($destination)) {
+                    echo $source, ' => ', $destination, PHP_EOL;
+                    copy($source, $destination);
+                }
             }
         }
     }
