@@ -143,9 +143,31 @@ class SiteBuilder
             $tags[$name] = $tag;
         }
 
+        // Pass the tags to the template renderer.
+        $this->templateRenderer->setGlobal('tags', $tags);
+
+        // Build the archives.
+        $archives = array();
+        $previousYear = $previousMonth = false;
+        foreach ($this->posts as $post) {
+            $key = $post->getDate()->format('Y/m');
+
+            if (! array_key_exists($key, $archives)) {
+                $archives[$key] = array(
+                    'name'  => $post->getDate()->format('F Y'),
+                    'posts' => array(),
+                );
+            }
+
+            $archives[$key]['posts'] = $post;
+        }
+
+        // Pass the archives to the template renderer.
+        $this->templateRenderer->setGlobal('archives', $archives);
+
         // Build each post page.
         foreach ($this->posts as $post) {
-            $this->templateRenderer->renderPost($post, $tags);
+            $this->templateRenderer->renderPost($post);
         }
 
         // Build the tags index.
@@ -153,9 +175,9 @@ class SiteBuilder
 
         // Now build each individual tag page.
         foreach ($tags as $tag) {
-            $this->templateRenderer->renderTag($tag, $tags);
+            $this->templateRenderer->renderTag($tag);
         }
 
-        $this->templateRenderer->renderSiteIndex($this->posts, $tags);
+        $this->templateRenderer->renderSiteIndex($this->posts);
     }
 }

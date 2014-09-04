@@ -15,13 +15,6 @@ use Twig_Loader_Filesystem;
 class TemplateRenderer
 {
     /**
-     * User object.
-     *
-     * @var User
-     */
-    protected $user;
-
-    /**
      * Path to the templates.
      *
      * @var string
@@ -57,13 +50,16 @@ class TemplateRenderer
     protected $theme = 'default';
 
     /**
-     * Default data passed to all templates.
+     * Global data passed to all templates.
      *
      * @var array
      */
-    protected $defaultData = array(
+    protected $globalData = array(
+        'user'        => null,
         'title'       => '',
         'description' => '',
+        'tags'        => array(),
+        'archives'    => array(),
     );
 
     /**
@@ -75,7 +71,7 @@ class TemplateRenderer
      */
     public function __construct(User $user, $templatesPath, $webPath)
     {
-        $this->user = $user;
+        $this->setGlobal('user', $user);
         $this->templatesPath = $templatesPath;
         $this->webPath = $webPath;
 
@@ -122,51 +118,34 @@ class TemplateRenderer
     }
 
     /**
-     * Sets the Site title.
+     * Sets a global.
      *
-     * @param string $title the title
+     * @param string $key   Global name.
+     * @param mixed  $value Global value.
      *
      * @return $this
      */
-    public function setTitle($title)
+    public function setGlobal($key, $value)
     {
-        $this->defaultData['title'] = $title;
+        $this->globalData[$key] = $value;
         return $this;
     }
 
     /**
-     * Gets the Site title.
+     * Gets a global.
      *
-     * @return string
+     * @return mixed
      */
-    public function getTitle()
+    public function getGlobal($key)
     {
-        return $this->defaultData['title'];
+        return array_key_exists($key, $this->globalData) ? $this->globalData[$key] : null;
     }
 
     /**
-     * Sets the site description.
+     * Copy template assets to the web directory.
      *
-     * @param string $description the description
-     *
-     * @return $this
+     * @return void
      */
-    public function setDescription($description)
-    {
-        $this->defaultData['description'] = $description;
-        return $this;
-    }
-
-    /**
-     * Gets the site description.
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->defaultData['description'];
-    }
-
     public function copyAssets()
     {
         $assetsRootPaths = array(
@@ -216,13 +195,11 @@ class TemplateRenderer
      *
      * @param Post $post Post object.
      *
-     * @return string
+     * @return void
      */
-    public function renderPost(Post $post, array $tags)
+    public function renderPost(Post $post)
     {
         $data = array(
-            'user' => $this->user,
-            'tags'  => $tags,
             'post' => $post,
             'body' => $this->parsedown->text($post->getBody()),
         );
@@ -236,11 +213,16 @@ class TemplateRenderer
         $this->render('post_page.html.twig', $data, $postPathname);
     }
 
-    public function renderTag(Tag $tag, array $tags)
+    /**
+     * Render a tag to the web directory.
+     *
+     * @param Tag $tag The tag to render.
+     *
+     * @return void
+     */
+    public function renderTag(Tag $tag)
     {
         $data = array(
-            'user'  => $this->user,
-            'tags'  => $tags,
             'tag'   => $tag,
         );
 
@@ -249,11 +231,16 @@ class TemplateRenderer
         $this->render('tag.html.twig', $data, $tagPathname);
     }
 
-    public function renderTagsIndex(array $tags)
+    /**
+     * Render the tag indexes.
+     *
+     * @param array $tags Array of Tag objects.
+     *
+     * @return void
+     */
+    public function renderTagsIndex()
     {
         $data = array(
-            'user'  => $this->user,
-            'tags'  => $tags,
             'route' => 'tags',
         );
 
@@ -266,11 +253,16 @@ class TemplateRenderer
         $this->render('tags.html.twig', $data, $tagsPathname);
     }
 
-    public function renderSiteIndex(array $posts, array $tags)
+    /**
+     * Render the site index.
+     *
+     * @param array $posts Array of Post objects.
+     *
+     * @return void
+     */
+    public function renderSiteIndex(array $posts)
     {
         $data = array(
-            'user'  => $this->user,
-            'tags'  => $tags,
             'posts' => $posts,
             'route' => 'index',
         );
@@ -291,7 +283,7 @@ class TemplateRenderer
      */
     protected function render($name, $data, $pathname)
     {
-        $template = $this->twig->render($name, array_merge($this->defaultData, $data));
+        $template = $this->twig->render($name, array_merge($this->globalData, $data));
 
         if (! is_dir($dirname = dirname($pathname))) {
             if (! mkdir($dirname, 0755, true)) {
@@ -300,51 +292,5 @@ class TemplateRenderer
         }
 
         file_put_contents($pathname, $template);
-    }
-
-    /**
-     * Get the path to a template file, with caching.
-     *
-     * @param string $name Name of the file.
-     *
-     * @return string|false
-     */
-    protected function getTemplateFile($name)
-    {
-        static $pathCache = array();
-
-        if (! array_key_exists($name, $pathCache)) {
-            $pathCache[$name] = $this->findTemplateFile($name);
-        }
-
-        return $pathCache[$name];
-    }
-
-    /**
-     * Find the template file on disk.
-     *
-     * @param string $name Name of the file.
-     *
-     * @return string|false
-     */
-    protected function findTemplateFile($name)
-    {
-        // Look at the theme first.
-        $paths = array(
-            $this->theme => Path::join($this->templatesPath, $this->theme),
-        );
-
-        // If the theme isn't default, look there next.
-        if ($this->theme !== 'default') {
-            $paths['default'] = Path::join($this->templatesPath, 'default');
-        }
-
-        foreach ($paths as $path => $pathname) {
-            if (file_exists(Path::join($pathname, $name))) {
-                return Path::join($path, $name);
-            }
-        }
-
-        return false;
     }
 }

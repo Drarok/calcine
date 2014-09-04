@@ -23,8 +23,8 @@ $templateRenderer = new TemplateRenderer(
     $config->get('paths.web')
 );
 $templateRenderer->setTheme($config->get('site.theme'))
-    ->setTitle($config->get('site.title'))
-    ->setDescription($config->get('site.description'))
+    ->setGlobal('title', $config->get('site.title'))
+    ->setGlobal('description', $config->get('site.description'))
 ;
 
 $site = new SiteBuilder(
