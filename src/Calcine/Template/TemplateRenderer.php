@@ -113,10 +113,37 @@ class TemplateRenderer
 
     public function copyAssets()
     {
-        $assetsPath = Path::join(
-            $this->templatesPath,
-            $this->getTheme()
+        $assetsRootPaths = array(
+            'css' => Path::join($this->templatesPath, $this->getTheme(), 'css'),
+            'js'  => Path::join($this->templatesPath, $this->getTheme(), 'js'),
         );
+
+        foreach ($assetsRootPaths as $type => $root) {
+            $dir = new \DirectoryIterator($root);
+
+            foreach ($dir as $fileInfo) {
+                if ($fileInfo->isDot()) {
+                    continue;
+                }
+
+                if (! fnmatch('*.' . $type, $fileInfo->getFilename())) {
+                    continue;
+                }
+
+                $source = $fileInfo->getPathname();
+                $destination = Path::join($this->webPath, $type, $fileInfo->getFilename());
+
+                $assetPath = Path::join($this->webPath, $type);
+                if (! is_dir($assetPath)) {
+                    if (! mkdir($assetPath, 0755, true)) {
+                        throw new \Exception('Failed to create asset path: ' . $assetPath);
+                    }
+                }
+
+                echo $source, ' => ', $destination, PHP_EOL;
+                copy($source, $destination);
+            }
+        }
     }
 
     /**
@@ -200,7 +227,7 @@ class TemplateRenderer
 
         if (! is_dir($dirname = dirname($pathname))) {
             if (! mkdir($dirname, 0755, true)) {
-                throw new \Exception('FAIL');
+                throw new \Exception('Failed to create template destination: ' . $dirname);
             }
         }
 
