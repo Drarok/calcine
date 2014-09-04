@@ -74,7 +74,11 @@ class TemplateRenderer
      */
     public function renderPost(Post $post)
     {
-        // Write the post to its own file.
+        $data = array(
+            'user' => $this->user,
+            'post' => $post,
+            'body' => $this->parsedown->text($post->getBody()),
+        );
 
         $postPathname = Path::join(
             $this->webPath,
@@ -82,11 +86,7 @@ class TemplateRenderer
             $post->getSlug() . '.html'
         );
 
-        $template = $this->twig->render('post.html.twig', array(
-            'user' => $this->user,
-            'post' => $post,
-            'body' => $this->parsedown->text($post->getBody()),
-        ));
+        $this->render('post.html.twig', $data, $postPathname);
 
         file_put_contents($postPathname, $template);
     }
@@ -119,13 +119,21 @@ class TemplateRenderer
     protected function findTemplateFile($name)
     {
         // Look at the theme first.
-        $hierarchy = array(
+        $paths = array(
             Path::join($this->templatesPath, $this->theme),
         );
 
         // If the theme isn't default, look there next.
         if ($this->theme !== 'default') {
-            $hierarchy[] = Path::join($this->templatesPath, 'default');
+            $paths[] = Path::join($this->templatesPath, 'default');
         }
+
+        foreach ($paths as $path) {
+            if (file_exists($pathname = Path::join($path, $name))) {
+                return $pathname;
+            }
+        }
+
+        return false;
     }
 }
