@@ -49,8 +49,16 @@
 /*
  * Blog posts
  */
+.blog-post-list {
+    list-style: none;
+}
+
 .blog-post {
     margin-bottom: 60px;
+}
+
+.blog-post h3 {
+    font-size: 30px;
 }
 
 .blog-post-title {
