@@ -1,13 +1,13 @@
 {% extends 'template.html.twig' %}
 
-{% block title %}Tag: {{ tag.getName }}{% endblock %}
+{% block title %}Tag: {{ tag.name }}{% endblock %}
 
 {% block content %}
     <div class="tag">
-        <h2>{{ tag.getName }}</h2>
-        <ul>
-        {% for post in tag.getPosts %}
-            <li>{% include 'post_link.html.twig' with {'post': post} %}</li>
+        <h2>{{ tag.name }}</h2>
+        <ul class="blog-post-list">
+        {% for post in tag.posts %}
+            <li>{% include 'post.html.twig' with {'link': true} %}</li>
         {% endfor %}
         </ul>
     </div>
