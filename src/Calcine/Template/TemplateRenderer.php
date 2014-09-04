@@ -233,9 +233,7 @@ class TemplateRenderer
             $post->getSlug() . '.html'
         );
 
-        $this->render('post.html.twig', $data, $postPathname);
-
-        return $postPathname;
+        $this->render('post_page.html.twig', $data, $postPathname);
     }
 
     public function renderTag(Tag $tag, array $tags)
