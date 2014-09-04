@@ -3,6 +3,7 @@
 namespace Calcine\Tests;
 
 use Calcine\Post;
+use Calcine\Post\Tag;
 
 class PostTest extends \PHPUnit_Framework_TestCase
 {
@@ -97,12 +98,12 @@ class PostTest extends \PHPUnit_Framework_TestCase
                 'title' => (string) $post->title,
                 'tags'  => array(),
                 'slug'  => (string) $post->slug,
-                'date'  => (string) $post->date,
+                'date'  => \DateTime::createFromFormat('Y-m-d H:i:s', (string) $post->date),
                 'body'  => (string) $post->body,
             );
 
             foreach ($post->tag as $tag) {
-                $expected['tags'][] = (string) $tag;
+                $expected['tags'][] = new Tag((string) $tag);
             }
 
             $result[] = array(
