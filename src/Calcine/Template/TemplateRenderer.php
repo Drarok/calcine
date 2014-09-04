@@ -57,6 +57,16 @@ class TemplateRenderer
     protected $theme = 'default';
 
     /**
+     * Default data passed to all templates.
+     *
+     * @var array
+     */
+    protected $defaultData = array(
+        'title'       => '',
+        'description' => '',
+    );
+
+    /**
      * Constructor.
      *
      * @param User   $user          User object.
@@ -111,6 +121,52 @@ class TemplateRenderer
         return $this->theme;
     }
 
+    /**
+     * Sets the Site title.
+     *
+     * @param string $title the title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->defaultData['title'] = $title;
+        return $this;
+    }
+
+    /**
+     * Gets the Site title.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->defaultData['title'];
+    }
+
+    /**
+     * Sets the site description.
+     *
+     * @param string $description the description
+     *
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->defaultData['description'] = $description;
+        return $this;
+    }
+
+    /**
+     * Gets the site description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->defaultData['description'];
+    }
+
     public function copyAssets()
     {
         $assetsRootPaths = array(
@@ -133,7 +189,7 @@ class TemplateRenderer
                     continue;
                 }
 
-                if (! fnmatch('*.' . $type, $fileInfo->getFilename())) {
+                if ($fileInfo->getExtension() != $type) {
                     continue;
                 }
 
@@ -162,10 +218,11 @@ class TemplateRenderer
      *
      * @return string
      */
-    public function renderPost(Post $post)
+    public function renderPost(Post $post, array $tags)
     {
         $data = array(
             'user' => $this->user,
+            'tags'  => $tags,
             'post' => $post,
             'body' => $this->parsedown->text($post->getBody()),
         );
@@ -181,10 +238,11 @@ class TemplateRenderer
         return $postPathname;
     }
 
-    public function renderTag(Tag $tag)
+    public function renderTag(Tag $tag, array $tags)
     {
         $data = array(
             'user'  => $this->user,
+            'tags'  => $tags,
             'tag'   => $tag,
         );
 
@@ -196,8 +254,9 @@ class TemplateRenderer
     public function renderTagsIndex(array $tags)
     {
         $data = array(
-            'user' => $this->user,
-            'tags' => $tags,
+            'user'  => $this->user,
+            'tags'  => $tags,
+            'route' => 'tags',
         );
 
         $tagsPathname = Path::join(
@@ -209,11 +268,13 @@ class TemplateRenderer
         $this->render('tags.html.twig', $data, $tagsPathname);
     }
 
-    public function renderSiteIndex(array $posts)
+    public function renderSiteIndex(array $posts, array $tags)
     {
         $data = array(
             'user'  => $this->user,
+            'tags'  => $tags,
             'posts' => $posts,
+            'route' => 'index',
         );
 
         $indexPathname = Path::join($this->webPath, 'index.html');
@@ -232,7 +293,7 @@ class TemplateRenderer
      */
     protected function render($name, $data, $pathname)
     {
-        $template = $this->twig->render($name, $data);
+        $template = $this->twig->render($name, array_merge($this->defaultData, $data));
 
         if (! is_dir($dirname = dirname($pathname))) {
             if (! mkdir($dirname, 0755, true)) {

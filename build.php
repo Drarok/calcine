@@ -22,7 +22,10 @@ $templateRenderer = new TemplateRenderer(
     $config->get('paths.templates'),
     $config->get('paths.web')
 );
-$templateRenderer->setTheme($config->get('site.theme'));
+$templateRenderer->setTheme($config->get('site.theme'))
+    ->setTitle($config->get('site.title'))
+    ->setDescription($config->get('site.description'))
+;
 
 $site = new SiteBuilder(
     $user,

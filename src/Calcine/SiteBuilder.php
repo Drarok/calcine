@@ -30,7 +30,7 @@ class SiteBuilder
     protected $tags = array();
 
     /**
-     * Array of posts, keyed on slug.
+     * Array of posts.
      *
      * @var array
      */
@@ -60,8 +60,8 @@ class SiteBuilder
         $this->posts = array();
         $this->tags = array();
 
-        $this->buildPosts();
-        $this->buildIndexes();
+        $this->loadPosts();
+        $this->buildSite();
         $this->templateRenderer->copyAssets();
 
         // Count the posts, and tags plus two: one for the site root index, one for the tags index.
@@ -72,40 +72,36 @@ class SiteBuilder
     }
 
     /**
-     * Build the site, returning how many pages were built.
+     * Load the post files into objects.
      *
-     * @return int
+     * @return void
      */
-    protected function buildPosts()
+    protected function loadPosts()
     {
         $dir = new \DirectoryIterator($this->postsPath);
 
-        foreach ($dir as $fileinfo) {
+        foreach ($dir as $fileInfo) {
             if ($dir->isDot()) {
                 continue;
             }
 
-            if ($fileinfo->getExtension() != 'markdown') {
+            if ($fileInfo->getExtension() != 'markdown') {
                 continue;
             }
 
-            echo $fileinfo->getFilename(), PHP_EOL;
+            echo $fileInfo->getFilename(), PHP_EOL;
 
-            // Parse the post file.
-            $post = new Post($fileinfo->getPathname());
-
-            // Write the post to its own file.
-            $postPathname = $this->templateRenderer->renderPost($post);
-
-            // Store the post in the posts and tags arrays for buildIndexes.
-            $this->posts[$postPathname] = $post;
+            // Parse the post file and store in the posts array.
+            $post = new Post($fileInfo->getPathname());
 
             foreach ($post->getTags() as $tag) {
                 if (! array_key_exists($tag->getName(), $this->tags)) {
                     $this->tags[$tag->getName()] = array();
                 }
-                $this->tags[$tag->getName()][$postPathname] = $post;
+                $this->tags[$tag->getName()][] = $post;
             }
+
+            $this->posts[] = $post;
         }
 
         var_dump(array(
@@ -115,11 +111,11 @@ class SiteBuilder
     }
 
     /**
-     * Build the index pages (/index.html, /tags/index.html, /tags/<tag>.html, etc).
+     * Build all post pages and the index pages (/index.html, /tags/index.html, /tags/<tag>.html, etc).
      *
      * @return void
      */
-    protected function buildIndexes()
+    protected function buildSite()
     {
         // Custom sort function for reverse date ordering.
         $postsReverseDateSort = function (Post $a, Post $b) {
@@ -131,6 +127,9 @@ class SiteBuilder
             return $dateA < $dateB ? 1 : -1;
         };
 
+        // Ensure posts are in order.
+        usort($this->posts, $postsReverseDateSort);
+
         // Sort tags by name.
         ksort($this->tags, SORT_NATURAL);
 
@@ -138,10 +137,15 @@ class SiteBuilder
         $tags = array();
         foreach ($this->tags as $name => $posts) {
             // Sort by date, descending.
-            uasort($posts, $postsReverseDateSort);
+            usort($posts, $postsReverseDateSort);
 
             $tag = new Tag($name, $posts);
             $tags[$name] = $tag;
+        }
+
+        // Build each post page.
+        foreach ($this->posts as $post) {
+            $this->templateRenderer->renderPost($post, $tags);
         }
 
         // Build the tags index.
@@ -149,12 +153,9 @@ class SiteBuilder
 
         // Now build each individual tag page.
         foreach ($tags as $tag) {
-            $this->templateRenderer->renderTag($tag);
+            $this->templateRenderer->renderTag($tag, $tags);
         }
 
-        // Reverse sort so newest posts are at the top.
-        uasort($this->posts, $postsReverseDateSort);
-
-        $this->templateRenderer->renderSiteIndex($this->posts);
+        $this->templateRenderer->renderSiteIndex($this->posts, $tags);
     }
 }
