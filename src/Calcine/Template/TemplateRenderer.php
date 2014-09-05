@@ -183,7 +183,6 @@ class TemplateRenderer
                 }
 
                 if (! file_exists($destination)) {
-                    echo $source, ' => ', $destination, PHP_EOL;
                     copy($source, $destination);
                 }
             }

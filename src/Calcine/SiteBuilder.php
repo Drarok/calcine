@@ -88,8 +88,6 @@ class SiteBuilder
                 continue;
             }
 
-            echo $fileInfo->getFilename(), PHP_EOL;
-
             // Parse the post file and store in the posts array.
             $post = new Post($fileInfo->getPathname());
 
