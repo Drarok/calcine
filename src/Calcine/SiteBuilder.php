@@ -9,13 +9,6 @@ use Calcine\Template\TemplateRenderer;
 class SiteBuilder
 {
     /**
-     * User object.
-     *
-     * @var User
-     */
-    protected $user;
-
-    /**
      * Template renderer service.
      *
      * @var TemplateRenderer
@@ -39,13 +32,11 @@ class SiteBuilder
     /**
      * Constructor.
      *
-     * @param User             $user             The user object.
      * @param TemplateRenderer $templateRenderer Template renderer.
      * @param string           $postsPath        Path to the posts.
      */
-    public function __construct(User $user, TemplateRenderer $templateRenderer, $postsPath)
+    public function __construct(TemplateRenderer $templateRenderer, $postsPath)
     {
-        $this->user = $user;
         $this->templateRenderer = $templateRenderer;
         $this->postsPath = $postsPath;
     }

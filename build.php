@@ -28,7 +28,6 @@ $templateRenderer->setTheme($config->get('site.theme'))
 ;
 
 $site = new SiteBuilder(
-    $user,
     $templateRenderer,
     $config->get('paths.posts')
 );
