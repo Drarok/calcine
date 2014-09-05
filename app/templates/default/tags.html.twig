@@ -3,9 +3,9 @@
 {% block title %}Tags{% endblock %}
 
 {% block content %}
-    <ul class="tags">
-    {% for tag in tags %}
-        <li><a href="/tags/{{ tag.getSlug ~ '.html' }}">{{ tag.getName }} ({{ tag.getPosts | length }})</a></li>
-    {% endfor %}
+    <ul class="tags nav nav-pills">
+        {% for tag in tags %}
+            <li class="active"><a href="/tags/{{ tag.slug ~ '.html' }}">{{ tag.name }} <span class="badge">{{ tag.posts|length }}</span></a></li>
+        {% endfor %}
     </ul>
 {% endblock %}

@@ -10,7 +10,7 @@
     <div class="blog-post-tags">
         {% if tags %}
             {% for tag in post.tags %}
-                <a href="/tags/{{ tag.slug ~ '.html' }}">{{ tag.name }}</a>
+                <a class="label label-primary" href="/tags/{{ tag.slug ~ '.html' }}">{{ tag.name }}</a>
             {% endfor %}
         {% endif %}
     </div>

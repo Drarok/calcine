@@ -52,26 +52,30 @@
                 </section>
             </div>
 
-            <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
-                <div class="sidebar-module sidebar-module-inset">
-                    <h4>About</h4>
-                    <p>Lorem ipsum here</p>
+            <div class="col-sm-3 col-sm-offset-1">
+                <div class="panel panel-info">
+                    <div class="panel-heading">About</div>
+                    <div class="panel-body">
+                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+                    </div>
                 </div>
-                <div class="sidebar-module">
-                    <h4>Archives</h4>
-                    <ol class="list-unstyled">
-                        {% for path, archive in archives %}
-                        <li><a href="/{{ path }}">{{ archive.name }}</a></li>
-                        {% endfor  %}
-                    </ol>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Archives</div>
+                    <div class="panel-body">
+                        <ol class="list-unstyled">
+                            {% for path, archive in archives %}
+                            <li><a href="/{{ path }}">{{ archive.name }}</a></li>
+                            {% endfor  %}
+                        </ol>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <footer class="blog-footer">
-        <p>Prodly powered by <a href="http://calcine.org">Calcine</a> Static Site Generator</p>
+    <footer class="blog-footer text-muted">
+        <p>Proudly powered by <a href="http://calcine.org">Calcine</a> Static Site Generator</p>
 
         <p>Copyright &copy; 2014 <a href="mailto:{{ user.email }}">{{ user.name }}</a>.</p>
     </footer>
