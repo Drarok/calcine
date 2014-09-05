@@ -15,6 +15,14 @@ echo 'Calcine version ', Version::getVersion(), PHP_EOL;
 
 $config = new Parser(Path::join(__DIR__, 'app', 'config', 'calcine.json'));
 
+if (! empty($argv[1]) && substr($argv[1], 0, 8) == '--theme=') {
+    $theme = substr($argv[1], 8);
+} else {
+    $theme = $config->get('site.theme');
+}
+
+echo 'Building with theme \'', $theme, '\'', PHP_EOL;
+
 $user = new User($config->get('user.name'), $config->get('user.email'));
 
 $templateRenderer = new TemplateRenderer(
@@ -22,7 +30,7 @@ $templateRenderer = new TemplateRenderer(
     $config->get('paths.templates'),
     $config->get('paths.web')
 );
-$templateRenderer->setTheme($config->get('site.theme'))
+$templateRenderer->setTheme($theme)
     ->setGlobal('title', $config->get('site.title'))
     ->setGlobal('description', $config->get('site.description'))
 ;
