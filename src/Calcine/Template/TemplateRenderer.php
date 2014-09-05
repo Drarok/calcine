@@ -214,31 +214,11 @@ class TemplateRenderer
     }
 
     /**
-     * Render a tag to the web directory.
-     *
-     * @param Tag $tag The tag to render.
+     * Render the tags index and tag pages.
      *
      * @return void
      */
-    public function renderTag(Tag $tag)
-    {
-        $data = array(
-            'tag'   => $tag,
-        );
-
-        $tagPathname = Path::join($this->webPath, 'tags', $tag->getSlug() . '.html');
-
-        $this->render('tag.html.twig', $data, $tagPathname);
-    }
-
-    /**
-     * Render the tag indexes.
-     *
-     * @param array $tags Array of Tag objects.
-     *
-     * @return void
-     */
-    public function renderTagsIndex()
+    public function renderTags()
     {
         $data = array(
             'route' => 'tags',
@@ -251,6 +231,36 @@ class TemplateRenderer
         );
 
         $this->render('tags.html.twig', $data, $tagsPathname);
+
+        foreach ($this->getGlobal('tags') as $tag) {
+            $data = array(
+                'route' => 'tag',
+                'tag'   => $tag,
+            );
+
+            $tagPathname = Path::join($this->webPath, 'tags', $tag->getSlug() . '.html');
+
+            $this->render('tag.html.twig', $data, $tagPathname);
+        }
+    }
+
+    /**
+     * Render the archive pages.
+     *
+     * @return void
+     */
+    public function renderArchives()
+    {
+        foreach ($this->getGlobal('archives') as $path => $archive) {
+            $data = array(
+                'route'   => 'archive',
+                'archive' => $archive,
+            );
+
+            $archivePathname = Path::join($this->webPath, $path, 'index.html');
+
+            $this->render('archive.html.twig', $data, $archivePathname);
+        }
     }
 
     /**

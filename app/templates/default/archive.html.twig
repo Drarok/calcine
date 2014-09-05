@@ -1,0 +1,14 @@
+{% extends 'template.html.twig' %}
+
+{% block title %}Archive: {{ archive.name }}{% endblock %}
+
+{% block content %}
+    <div class="archive">
+        <h2>{{ archive.name }}</h2>
+        <ul class="blog-post-list">
+        {% for post in archive.posts %}
+            <li>{% include 'post.html.twig' with {'link': true} %}</li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

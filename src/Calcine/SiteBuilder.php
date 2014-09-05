@@ -23,6 +23,13 @@ class SiteBuilder
     protected $tags = array();
 
     /**
+     * Array of archive information.
+     *
+     * @var array
+     */
+    protected $archives = array();
+
+    /**
      * Array of posts.
      *
      * @var array
@@ -71,6 +78,7 @@ class SiteBuilder
     {
         $dir = new \DirectoryIterator($this->postsPath);
 
+        $tags = array();
         foreach ($dir as $fileInfo) {
             if ($dir->isDot()) {
                 continue;
@@ -86,28 +94,15 @@ class SiteBuilder
             $post = new Post($fileInfo->getPathname());
 
             foreach ($post->getTags() as $tag) {
-                if (! array_key_exists($tag->getName(), $this->tags)) {
-                    $this->tags[$tag->getName()] = array();
+                if (! array_key_exists($tag->getName(), $tags)) {
+                    $tags[$tag->getName()] = array();
                 }
-                $this->tags[$tag->getName()][] = $post;
+                $tags[$tag->getName()][] = $post;
             }
 
             $this->posts[] = $post;
         }
 
-        var_dump(array(
-            'posts' => count($this->posts),
-            'tags' => count($this->tags),
-        ));
-    }
-
-    /**
-     * Build all post pages and the index pages (/index.html, /tags/index.html, /tags/<tag>.html, etc).
-     *
-     * @return void
-     */
-    protected function buildSite()
-    {
         // Custom sort function for reverse date ordering.
         $postsReverseDateSort = function (Post $a, Post $b) {
             $dateA = $a->getDate();
@@ -121,52 +116,54 @@ class SiteBuilder
         // Ensure posts are in order.
         usort($this->posts, $postsReverseDateSort);
 
-        // Sort tags by name.
-        ksort($this->tags, SORT_NATURAL);
-
         // Convert the array of name => posts to real Tag objects.
-        $tags = array();
-        foreach ($this->tags as $name => $posts) {
+        foreach ($tags as $name => $posts) {
             // Sort by date, descending.
             usort($posts, $postsReverseDateSort);
 
             $tag = new Tag($name, $posts);
-            $tags[$name] = $tag;
+            $this->tags[$name] = $tag;
         }
 
-        // Pass the tags to the template renderer.
-        $this->templateRenderer->setGlobal('tags', $tags);
+        // Sort tags by name.
+        ksort($this->tags, SORT_NATURAL);
 
         // Build the archives.
-        $archives = array();
         $previousYear = $previousMonth = false;
         foreach ($this->posts as $post) {
             $key = $post->getDate()->format('Y/m');
 
-            if (! array_key_exists($key, $archives)) {
-                $archives[$key] = array(
+            if (! array_key_exists($key, $this->archives)) {
+                $this->archives[$key] = array(
                     'name'  => $post->getDate()->format('F Y'),
                     'posts' => array(),
                 );
             }
 
-            $archives[$key]['posts'] = $post;
+            $this->archives[$key]['posts'][] = $post;
         }
+    }
 
-        // Pass the archives to the template renderer.
-        $this->templateRenderer->setGlobal('archives', $archives);
+    /**
+     * Build all post pages and the index pages (/index.html, /tags/index.html, /tags/<tag>.html, etc).
+     *
+     * @return void
+     */
+    protected function buildSite()
+    {
+        // Pass the tags and archives to the template renderer.
+        $this->templateRenderer->setGlobal('tags', $this->tags);
+        $this->templateRenderer->setGlobal('archives', $this->archives);
+
+        // Build the tags index and individual pages.
+        $this->templateRenderer->renderTags();
+
+        // Build the archives.
+        $this->templateRenderer->renderArchives();
 
         // Build each post page.
         foreach ($this->posts as $post) {
             $this->templateRenderer->renderPost($post);
-        }
-
-        // Build the tags index.
-        $this->templateRenderer->renderTagsIndex($tags);
-
-        // Now build each individual tag page.
-        foreach ($tags as $tag) {
-            $this->templateRenderer->renderTag($tag);
         }
 
         $this->templateRenderer->renderSiteIndex($this->posts);
