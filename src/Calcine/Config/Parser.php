@@ -18,6 +18,9 @@ class Parser
         }
 
         $this->data = json_decode(file_get_contents($pathname), true);
+        if ($this->data === null && $error = json_last_error_msg()) {
+            throw new \Exception($error);
+        }
     }
 
     /**
