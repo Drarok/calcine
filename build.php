@@ -27,8 +27,8 @@ $user = new User($config->get('user.name'), $config->get('user.email'));
 
 $templateRenderer = new TemplateRenderer(
     $user,
-    $config->get('paths.templates'),
-    $config->get('paths.web')
+    $config->get('templates.path'),
+    $config->get('web.path')
 );
 $templateRenderer->setTheme($theme)
     ->setGlobal('title', $config->get('site.title'))
@@ -37,7 +37,7 @@ $templateRenderer->setTheme($theme)
 
 $site = new SiteBuilder(
     $templateRenderer,
-    $config->get('paths.posts')
+    $config->get('posts.path')
 );
 
 $stats = $site->build();

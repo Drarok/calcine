@@ -3,10 +3,15 @@
         "name": "Your Name",
         "email": "you@yourdomain.tld"
     },
-    "paths": {
-        "templates": "app/templates/default",
-        "posts": "posts",
-        "web": "web"
+    "templates": {
+        "path": "app/templates/default"
+    },
+    "posts": {
+        "format": "markdown",
+        "path": "posts"
+    },
+    "web": {
+        "path": "web"
     },
     "site": {
         "theme": "default",
