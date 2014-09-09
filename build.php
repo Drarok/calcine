@@ -8,6 +8,7 @@ use Calcine\Config\Parser;
 use Calcine\Path;
 use Calcine\SiteBuilder;
 use Calcine\Template\TemplateRenderer;
+use Calcine\Template\Engine\EngineFactory;
 use Calcine\User;
 use Calcine\Version;
 
@@ -25,8 +26,11 @@ echo 'Building with theme \'', $theme, '\'', PHP_EOL;
 
 $user = new User($config->get('user.name'), $config->get('user.email'));
 
+$engine = EngineFactory::createInstance($config->get('posts.format'));
+
 $templateRenderer = new TemplateRenderer(
     $user,
+    $engine,
     $config->get('templates.path'),
     $config->get('web.path')
 );
