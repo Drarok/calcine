@@ -6,8 +6,7 @@ use Calcine\User;
 use Calcine\Path;
 use Calcine\Post;
 use Calcine\Post\Tag;
-
-use ParsedownExtra;
+use Calcine\Template\Engine\EngineInterface;
 
 use Twig_Environment;
 use Twig_Loader_Filesystem;
@@ -29,11 +28,11 @@ class TemplateRenderer
     protected $webPath;
 
     /**
-     * ParsedownExtra instance.
+     * Template rendering engine.
      *
-     * @var ParsedownExtra
+     * @var EngineInterface
      */
-    protected $parsedown;
+    protected $engine;
 
     /**
      * Twig environment.
@@ -74,8 +73,6 @@ class TemplateRenderer
         $this->setGlobal('user', $user);
         $this->templatesPath = $templatesPath;
         $this->webPath = $webPath;
-
-        $this->parsedown = new ParsedownExtra();
 
         $loader = new Twig_Loader_Filesystem();
         $this->twig = new Twig_Environment($loader);
@@ -200,7 +197,7 @@ class TemplateRenderer
     {
         $data = array(
             'post' => $post,
-            'body' => $this->parsedown->text($post->getBody()),
+            'body' => $this->engine->render($post->getBody()),
         );
 
         $postPathname = Path::join(
