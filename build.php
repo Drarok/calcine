@@ -31,7 +31,7 @@ $engine = EngineFactory::createInstance($config->get('posts.format'));
 $templateRenderer = new TemplateRenderer(
     $user,
     $engine,
-    $config->get('templates.path'),
+    Path::join(__DIR__, 'app', 'templates'),
     $config->get('web.path')
 );
 $templateRenderer->setTheme($theme)

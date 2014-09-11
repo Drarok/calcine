@@ -3,9 +3,6 @@
         "name": "Your Name",
         "email": "you@yourdomain.tld"
     },
-    "templates": {
-        "path": "app/templates/default"
-    },
     "posts": {
         "format": "markdown",
         "path": "posts"
