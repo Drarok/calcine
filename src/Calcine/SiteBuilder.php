@@ -84,10 +84,6 @@ class SiteBuilder
                 continue;
             }
 
-            if ($fileInfo->getExtension() != 'markdown') {
-                continue;
-            }
-
             // Parse the post file and store in the posts array.
             $post = new Post($fileInfo->getPathname());
 
