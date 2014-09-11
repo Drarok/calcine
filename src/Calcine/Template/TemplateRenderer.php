@@ -68,9 +68,10 @@ class TemplateRenderer
      * @param string $templatesPath Templates path.
      * @param string $webPath       Web path.
      */
-    public function __construct(User $user, $templatesPath, $webPath)
+    public function __construct(User $user, EngineInterface $engine, $templatesPath, $webPath)
     {
         $this->setGlobal('user', $user);
+        $this->engine = $engine;
         $this->templatesPath = $templatesPath;
         $this->webPath = $webPath;
 
