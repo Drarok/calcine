@@ -1,5 +1,10 @@
 <?php
 
+if (! version_compare(PHP_VERSION, '5.4.0', '>=')) {
+    echo 'Calcine requires PHP 5.4.', PHP_EOL;
+    exit(1);
+}
+
 $startTime = microtime(true);
 
 require_once __DIR__ . '/vendor/autoload.php';
