@@ -2,8 +2,17 @@
 
 namespace Calcine;
 
+use Calcine\Template\Engine\EngineInterface;
+
 class Post
 {
+    /**
+     * Rendering engine.
+     *
+     * @var EngineInterface
+     */
+    protected $engine;
+
     /**
      * Post title.
      *
@@ -42,10 +51,12 @@ class Post
     /**
      * Constructor.
      *
-     * @param string $pathname Pathname to the post file.
+     * @param EngineInterface $engine   Rendering engine.
+     * @param string          $pathname Pathname to the post file.
      */
-    public function __construct($pathname)
+    public function __construct(EngineInterface $engine, $pathname)
     {
+        $this->engine = $engine;
         $this->parse($pathname);
     }
 
@@ -97,6 +108,16 @@ class Post
     public function getBody()
     {
         return $this->body;
+    }
+
+    /**
+     * Get rendered body.
+     *
+     * @return string
+     */
+    public function getRenderedBody()
+    {
+        return $this->engine->render($this->body);
     }
 
     /**
