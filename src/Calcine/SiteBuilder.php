@@ -4,10 +4,18 @@ namespace Calcine;
 
 use Calcine\Path\PathService;
 use Calcine\Post\Tag;
+use Calcine\Template\Engine\EngineInterface;
 use Calcine\Template\TemplateRenderer;
 
 class SiteBuilder
 {
+    /**
+     * Rendering engine.
+     *
+     * @var EngineInterface
+     */
+    protected $engine;
+
     /**
      * Template renderer service.
      *
@@ -39,11 +47,13 @@ class SiteBuilder
     /**
      * Constructor.
      *
+     * @param EngineInterface  $engine           Rendering engine.
      * @param TemplateRenderer $templateRenderer Template renderer.
      * @param string           $postsPath        Path to the posts.
      */
-    public function __construct(TemplateRenderer $templateRenderer, $postsPath)
+    public function __construct(EngineInterface $engine, TemplateRenderer $templateRenderer, $postsPath)
     {
+        $this->engine = $engine;
         $this->templateRenderer = $templateRenderer;
         $this->postsPath = $postsPath;
     }
@@ -85,7 +95,7 @@ class SiteBuilder
             }
 
             // Parse the post file and store in the posts array.
-            $post = new Post($fileInfo->getPathname());
+            $post = new Post($this->engine, $fileInfo->getPathname());
 
             foreach ($post->getTags() as $tag) {
                 if (! array_key_exists($tag->getName(), $tags)) {
