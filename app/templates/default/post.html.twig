@@ -5,7 +5,6 @@
         <h3>{{ post.title }}</h3>
     {% endif %}
     <time datetime="{{ post.date|date(constant('DATE_RFC3339')) }}">{{ post.date|date('F dS, Y') }}</time>
-    <div class="blog-post-tags">
 
     <div class="blog-post-tags">
         {% if tags %}
@@ -15,7 +14,5 @@
         {% endif %}
     </div>
 
-    {% if body is defined %}
-        <div class="blog-post-body">{{ body | raw }}</div>
-    {% endif %}
+    <div class="blog-post-body">{{ post.renderedBody | raw }}</div>
 </div>
