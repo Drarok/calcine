@@ -35,7 +35,6 @@ $engine = EngineFactory::createInstance($config->get('posts.format'));
 
 $templateRenderer = new TemplateRenderer(
     $user,
-    $engine,
     Path::join(__DIR__, 'app', 'templates'),
     $config->get('web.path')
 );
@@ -45,6 +44,7 @@ $templateRenderer->setTheme($theme)
 ;
 
 $site = new SiteBuilder(
+    $engine,
     $templateRenderer,
     $config->get('posts.path')
 );
