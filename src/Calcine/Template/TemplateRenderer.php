@@ -6,7 +6,6 @@ use Calcine\User;
 use Calcine\Path;
 use Calcine\Post;
 use Calcine\Post\Tag;
-use Calcine\Template\Engine\EngineInterface;
 
 use Twig_Environment;
 use Twig_Loader_Filesystem;
@@ -26,13 +25,6 @@ class TemplateRenderer
      * @var string
      */
     protected $webPath;
-
-    /**
-     * Template rendering engine.
-     *
-     * @var EngineInterface
-     */
-    protected $engine;
 
     /**
      * Twig environment.
@@ -68,10 +60,9 @@ class TemplateRenderer
      * @param string $templatesPath Templates path.
      * @param string $webPath       Web path.
      */
-    public function __construct(User $user, EngineInterface $engine, $templatesPath, $webPath)
+    public function __construct(User $user, $templatesPath, $webPath)
     {
         $this->setGlobal('user', $user);
-        $this->engine = $engine;
         $this->templatesPath = $templatesPath;
         $this->webPath = $webPath;
 
@@ -198,7 +189,6 @@ class TemplateRenderer
     {
         $data = array(
             'post' => $post,
-            'body' => $this->engine->render($post->getBody()),
         );
 
         $postPathname = Path::join(
