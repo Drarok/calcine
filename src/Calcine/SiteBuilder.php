@@ -170,6 +170,7 @@ class SiteBuilder
             $this->templateRenderer->renderPost($post);
         }
 
+        // Finally, the site index.
         $this->templateRenderer->renderSiteIndex($this->posts);
     }
 }
