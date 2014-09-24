@@ -253,6 +253,8 @@ class TemplateRenderer
     /**
      * Render the site index.
      *
+     * This will display the 1st 30 posts for now.
+     *
      * @param array $posts Array of Post objects.
      *
      * @return void
@@ -260,7 +262,7 @@ class TemplateRenderer
     public function renderSiteIndex(array $posts)
     {
         $data = array(
-            'posts' => $posts,
+            'posts' => array_slice($posts, 0, 30),
             'route' => 'index',
         );
 
