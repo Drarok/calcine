@@ -49,6 +49,13 @@ class Post
     protected $body;
 
     /**
+     * Cached version of the rendered body.
+     *
+     * @var string
+     */
+    protected $renderedBody;
+
+    /**
      * Constructor.
      *
      * @param EngineInterface $engine   Rendering engine.
@@ -117,7 +124,11 @@ class Post
      */
     public function getRenderedBody()
     {
-        return $this->engine->render($this->body);
+        if ($this->renderedBody === null) {
+            $this->renderedBody = $this->engine->render($this->body);
+        }
+
+        return $this->renderedBody;
     }
 
     /**
