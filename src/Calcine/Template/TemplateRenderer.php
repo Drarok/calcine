@@ -171,7 +171,7 @@ class TemplateRenderer
                     }
                 }
 
-                if (! file_exists($destination)) {
+                if (! file_exists($destination) || filemtime($destination) < $fileInfo->getMTime()) {
                     copy($source, $destination);
                 }
             }
