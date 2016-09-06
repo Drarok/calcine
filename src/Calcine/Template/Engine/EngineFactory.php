@@ -18,15 +18,12 @@ abstract class EngineFactory
         switch ($name) {
             case 'markdown':
                 return new Markdown();
-                break;
 
             case 'plaintext':
                 return new PlainText();
-                break;
 
             default:
                 throw new \Exception('Invalid rendering engine: \'' . $name . '\'');
-                break;
         }
     }
 }
