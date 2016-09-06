@@ -13,7 +13,7 @@
         }
     },
     "require": {
-        "erusev/parsedown-extra": "dev-master",
+        "erusev/parsedown-extra": "0.7.0",
         "twig/twig": "1.*"
     },
     "require-dev": {
