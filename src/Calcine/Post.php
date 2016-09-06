@@ -235,10 +235,6 @@ class Post
                     },
                     explode(',', $value)
                 );
-
-                if (! count($this->tags)) {
-                    throw new Post\ParseException('Tags header is invalid.');
-                }
                 break;
 
             case 'slug':
@@ -264,13 +260,6 @@ class Post
 
             case 'body':
                 // Nothing to do for this tag, it's just a marker.
-                break;
-
-            default:
-                throw new Post\ParseException(sprintf(
-                    'Unknown tag \'%s\'',
-                    $name
-                ));
                 break;
         }
     }
