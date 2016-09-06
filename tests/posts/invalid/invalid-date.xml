@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<data>
+    <exception>
+        <class>Calcine\Post\ParseException</class>
+        <message>Date header is invalid: '2014-99-99'</message>
+    </exception>
+</data>

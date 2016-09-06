@@ -9,11 +9,27 @@ use Calcine\Post\Tag;
 class PostTest extends \PHPUnit_Framework_TestCase
 {
     private $engine;
+    private $errorLevel;
 
     public function setUp()
     {
         parent::setUp();
         $this->engine = new Markdown();
+
+        // This is required so we can test that fopen failures are handled.
+        $this->errorLevel = error_reporting(0);
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        error_reporting($this->errorLevel);
+    }
+
+    public function testFailureWhenNoFile()
+    {
+        $this->setExpectedException('Exception', 'Cannot open /path/to/nowhere');
+        new Post($this->engine, '/path/to/nowhere');
     }
 
     /**
@@ -35,6 +51,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected['slug'], $post->getSlug());
         $this->assertEquals($expected['date'], $post->getDate());
         $this->assertEquals($expected['body'], $post->getBody());
+        $this->assertEquals($expected['renderedBody'], $post->getRenderedBody());
     }
 
     /**
@@ -104,11 +121,12 @@ class PostTest extends \PHPUnit_Framework_TestCase
             $post = $xml->post;
 
             $expected = array(
-                'title' => (string) $post->title,
-                'tags'  => array(),
-                'slug'  => (string) $post->slug,
-                'date'  => \DateTime::createFromFormat('Y-m-d H:i:s', (string) $post->date),
-                'body'  => (string) $post->body,
+                'title'        => (string) $post->title,
+                'tags'         => array(),
+                'slug'         => (string) $post->slug,
+                'date'         => \DateTime::createFromFormat('Y-m-d H:i:s', (string) $post->date),
+                'body'         => (string) $post->body,
+                'renderedBody' => (string) $post->renderedBody,
             );
 
             foreach ($post->tag as $tag) {

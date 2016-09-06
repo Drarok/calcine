@@ -14,5 +14,8 @@
         <body><![CDATA[# Heading 1
 
 Here is the body of your post. This block is parsed as Markdown.]]></body>
+
+        <renderedBody><![CDATA[<h1>Heading 1</h1>
+<p>Here is the body of your post. This block is parsed as Markdown.</p>]]></renderedBody>
     </post>
 </data>

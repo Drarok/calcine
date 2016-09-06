@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<data>
+    <exception>
+        <class>Calcine\Post\ParseException</class>
+        <message>Body header must not have a value.</message>
+    </exception>
+</data>
