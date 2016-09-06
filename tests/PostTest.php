@@ -2,11 +2,20 @@
 
 namespace Calcine\Tests;
 
+use Calcine\Template\Engine\Markdown;
 use Calcine\Post;
 use Calcine\Post\Tag;
 
 class PostTest extends \PHPUnit_Framework_TestCase
 {
+    private $engine;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->engine = new Markdown();
+    }
+
     /**
      * Test the parsing of a post.
      *
@@ -19,7 +28,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidPosts($expected, $pathname)
     {
-        $post = new Post($pathname);
+        $post = new Post($this->engine, $pathname);
 
         $this->assertEquals($expected['title'], $post->getTitle());
         $this->assertEquals($expected['tags'], $post->getTags());
@@ -52,7 +61,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
     public function testInvalidPosts($expectedException, $expectedMessage, $pathname)
     {
         $this->setExpectedException($expectedException, $expectedMessage);
-        $post = new Post($pathname);
+        $post = new Post($this->engine, $pathname);
     }
 
     /**
