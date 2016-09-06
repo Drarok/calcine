@@ -56,6 +56,6 @@ class Tag
      */
     public function getSlug()
     {
-        return preg_replace('/[^a-z0-9-]+/', '-', strtolower($this->getName()));
+        return trim(preg_replace('/[^a-z0-9-]+/', '-', strtolower($this->getName())), '-');
     }
 }
