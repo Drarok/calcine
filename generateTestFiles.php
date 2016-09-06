@@ -1,18 +1,22 @@
 <?php
 
+define('DATETIME_FORMAT_MYSQL', 'Y-m-d H:i:s');
+
 $template = file_get_contents(__DIR__ . '/tests/postTemplate.markdown');
 
-$baseDate = DateTime::createFromFormat('Y-m-d H:i:s', '2014-09-03 08:00:00');
+$baseDate = DateTime::createFromFormat(DATETIME_FORMAT_MYSQL, '2014-09-03 09:00:00');
 
-for ($i = 0; $i < 100; ++$i) {
+for ($i = -10; $i < 1000; ++$i) {
     $date = clone $baseDate;
-    $date->modify(sprintf('+%d days', $i));
+    $date->modify(sprintf('+%d days', abs($i)));
+
+    $slug = sprintf('%s-%04d', $i <= 0 ? 'url-prefix-0' : 'url-prefix-1', abs($i));
 
     $tokens = array(
-        '{{ title }}' => sprintf('Blog Post %d', $i),
+        '{{ title }}' => sprintf('Blog Post %d', abs($i)),
         '{{ tags }}'  => 'Tag, Test, PHP',
-        '{{ slug }}'  => $slug = sprintf('url-slug-%d', $i),
-        '{{ date }}'  => $date->format('Y-m-d H:i:s'),
+        '{{ slug }}'  => $slug,
+        '{{ date }}'  => $date->format(DATETIME_FORMAT_MYSQL),
         '{{ body }}'  => implode(PHP_EOL, array(
             '# Heading',
             '',
@@ -30,3 +34,5 @@ for ($i = 0; $i < 100; ++$i) {
 
     file_put_contents(__DIR__ . '/posts/' . $postFilename, $post);
 }
+
+echo 'Last date is ', $date->format(DATETIME_FORMAT_MYSQL), PHP_EOL;
