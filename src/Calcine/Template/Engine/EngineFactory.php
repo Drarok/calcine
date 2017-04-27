@@ -2,8 +2,6 @@
 
 namespace Calcine\Template\Engine;
 
-
-
 abstract class EngineFactory
 {
     /**
@@ -12,6 +10,8 @@ abstract class EngineFactory
      * @param string $name Short name of the engine.
      *
      * @return EngineInterface
+     *
+     * @throws \Exception when invalid engine is requested.
      */
     public static function createInstance($name)
     {
