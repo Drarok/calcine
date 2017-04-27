@@ -5,7 +5,7 @@
     },
     "posts": {
         "format": "markdown",
-        "path": "posts"
+        "path": "app/posts"
     },
     "web": {
         "path": "web"

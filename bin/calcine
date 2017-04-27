@@ -1,0 +1,43 @@
+#!/usr/bin/env php
+<?php
+
+use Bramus\Ansi\Ansi;
+use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
+
+use Calcine\Path;
+use Calcine\Config\Parser;
+use Calcine\Commands\BaseCommand;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+define('CALCINE_ROOT', realpath(__DIR__ . '/..'));
+
+$commands = [
+    'build',
+    'new-post',
+];
+
+$args = array_slice($argv, 1);
+$cmd = !empty($args[0]) ? $args[0] : 'help';
+
+if (!in_array($cmd, $commands)) {
+    $cmd = 'help';
+}
+
+$configPath = Path::join(__DIR__, '..', 'app', 'config', 'calcine.json');
+$config = new Parser($configPath);
+
+try {
+    $ansi = new Ansi();
+
+    /** @var BaseCommand $command */
+    $command = BaseCommand::factory($config, $cmd);
+    $command->execute(array_slice($args, 1), $ansi);
+} catch (Exception $e) {
+    $ansi->color([SGR::COLOR_FG_WHITE, SGR::COLOR_BG_RED])
+        ->text($e->getMessage())
+        ->lf()
+    ;
+
+    exit(1);
+}

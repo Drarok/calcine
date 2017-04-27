@@ -5,11 +5,15 @@ namespace Calcine\Template\Engine;
 class PlainText implements EngineInterface
 {
     /**
-     * Render the given template string.
-     *
-     * @param string $string Template data from a Post file.
-     *
-     * @return string
+     * @inheritdoc
+     */
+    public function getExtension()
+    {
+        return 'txt';
+    }
+
+    /**
+     * @inheritdoc
      */
     public function render($string)
     {
