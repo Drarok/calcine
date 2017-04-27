@@ -2,7 +2,6 @@
 
 namespace Calcine;
 
-use Calcine\Path\PathService;
 use Calcine\Post\Tag;
 use Calcine\Template\Engine\EngineInterface;
 use Calcine\Template\TemplateRenderer;
@@ -90,7 +89,7 @@ class SiteBuilder
 
         $tags = array();
         foreach ($dir as $fileInfo) {
-            if ($dir->isDot()) {
+            if ($fileInfo->isDot() || $fileInfo->isDir()) {
                 continue;
             }
 

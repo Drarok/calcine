@@ -25,7 +25,7 @@ class SiteBuilderTest extends \PHPUnit_Framework_TestCase
         $webPath = __DIR__ . '/../tmp/web';
         $renderer = new TemplateRenderer($user, $templatesPath, $webPath);
 
-        $path = __DIR__ . '/../posts';
+        $path = __DIR__ . '/posts';
 
         $this->builder = new SiteBuilder($engine, $renderer, $path);
     }
@@ -33,5 +33,7 @@ class SiteBuilderTest extends \PHPUnit_Framework_TestCase
     public function testBuild()
     {
         $this->builder->build();
+
+        // TODO: We need some assertions here
     }
 }
