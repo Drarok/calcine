@@ -2,6 +2,7 @@
 
 namespace Calcine;
 
+use Calcine\Post\Tag;
 use Calcine\Template\Engine\EngineInterface;
 
 class Post
@@ -23,7 +24,7 @@ class Post
     /**
      * Array of Tag objects.
      *
-     * @var array
+     * @var Tag[]
      */
     protected $tags;
 
@@ -80,7 +81,7 @@ class Post
     /**
      * Get the tags as an array of tag name strings.
      *
-     * @return array
+     * @return Tag[]
      */
     public function getTags()
     {
@@ -98,7 +99,7 @@ class Post
     }
 
     /**
-     * Get date string (yyyy-mm-dd hh:mm:ss).
+     * Get the post date.
      *
      * @return \DateTime
      */
@@ -137,6 +138,9 @@ class Post
      * @param string $pathname Path to the post file.
      *
      * @return void
+     *
+     * @throws \Exception when file cannot be opened
+     * @throws Post\ParseException when file is invalid
      */
     protected function parse($pathname)
     {
@@ -209,6 +213,8 @@ class Post
      * @param string $value Value of the header.
      *
      * @return void
+     *
+     * @throws Post\ParseException when header is invalid
      */
     protected function processHeader($name, $value)
     {

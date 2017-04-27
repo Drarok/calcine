@@ -2,6 +2,8 @@
 
 namespace Calcine\Post;
 
+use Calcine\Post;
+
 class Tag
 {
     /**
@@ -22,6 +24,7 @@ class Tag
      * Constructor.
      *
      * @param string $name Tag name.
+     * @param Post[] $posts Posts that belong to this tag.
      */
     public function __construct($name, array $posts = array())
     {
@@ -42,7 +45,7 @@ class Tag
     /**
      * Gets the posts.
      *
-     * @return array
+     * @return Post[]
      */
     public function getPosts()
     {

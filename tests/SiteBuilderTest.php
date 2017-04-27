@@ -9,6 +9,9 @@ use Calcine\User;
 
 class SiteBuilderTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var SiteBuilder
+     */
     private $builder;
 
     public function setUp()

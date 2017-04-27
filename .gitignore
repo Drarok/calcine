@@ -1,5 +1,4 @@
 /app/config/*.json
-/app/db/calcine.sqlite3
 /posts/
 /tmp/
 /vendor/

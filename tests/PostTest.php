@@ -93,6 +93,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
 
     protected function getDataProviderForDirectory($path)
     {
+        $result = [];
         $dir = new \DirectoryIterator($path);
 
         foreach ($dir as $fileinfo) {

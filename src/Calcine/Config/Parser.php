@@ -10,6 +10,8 @@ class Parser
      * Constructor.
      *
      * @param string $pathname Full path to a JSON file.
+     *
+     * @throws \Exception
      */
     public function __construct($pathname)
     {

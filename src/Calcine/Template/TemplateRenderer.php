@@ -123,6 +123,8 @@ class TemplateRenderer
     /**
      * Gets a global.
      *
+     * @param string $key Global name.
+     *
      * @return mixed
      */
     public function getGlobal($key)
@@ -134,44 +136,61 @@ class TemplateRenderer
      * Copy template assets to the web directory.
      *
      * @return void
+     *
+     * @throws \Exception when asset path cannot be created
      */
     public function copyAssets()
     {
-        $assetsRootPaths = array(
-            array(Path::join($this->templatesPath, $this->getTheme(), 'css'), 'css'),
-            array(Path::join($this->templatesPath, $this->getTheme(), 'js'), 'js'),
-        );
+        $theme = $this->getTheme();
 
-        if ($this->getTheme() != 'default') {
-            $assetsRootPaths[] = array(Path::join($this->templatesPath, 'default', 'css'), 'css');
-            $assetsRootPaths[] = array(Path::join($this->templatesPath, 'default', 'js'), 'js');
+        $assetTypes = array('css', 'fonts', 'img', 'js');
+
+        $assetsRootPaths = array();
+        foreach ($assetTypes as $type) {
+            $assetsRootPaths[] = array(
+                Path::join(realpath($this->templatesPath), $theme, $type),
+                $type,
+            );
+
+            if ($theme !== 'default') {
+                $assetsRootPaths[] = array(
+                    Path::join(realpath($this->templatesPath), 'default', $type),
+                    $type
+                );
+            }
         }
 
         foreach ($assetsRootPaths as $pathInfo) {
             list($path, $type) = $pathInfo;
 
+            if (!is_dir($path)) {
+                continue;
+            }
+
             $dir = new \DirectoryIterator($path);
 
             foreach ($dir as $fileInfo) {
-                if ($fileInfo->isDot()) {
+                if ($fileInfo->isDot() || $fileInfo->isDir()) {
                     continue;
                 }
-
-                if ($fileInfo->getExtension() != $type) {
-                    continue;
-                }
-
-                $source = $fileInfo->getPathname();
-                $destination = Path::join($this->webPath, $type, $fileInfo->getFilename());
 
                 $assetPath = Path::join($this->webPath, $type);
-                if (! is_dir($assetPath)) {
-                    if (! mkdir($assetPath, 0755, true)) {
-                        throw new \Exception('Failed to create asset path: ' . $assetPath);
+                if (!is_dir($assetPath)) {
+                    $level = error_reporting(0);
+
+                    try {
+                        if (!mkdir($assetPath, 0755, true)) {
+                            throw new \Exception('Failed to create asset path: ' . $assetPath);
+                        }
+                    } finally {
+                        error_reporting($level);
                     }
                 }
 
-                if (! file_exists($destination) || filemtime($destination) < $fileInfo->getMTime()) {
+                $source = $fileInfo->getPathname();
+                $destination = Path::join(realpath($this->webPath), $type, $fileInfo->getFilename());
+
+                if (!file_exists($destination) || filemtime($destination) < $fileInfo->getMTime()) {
                     copy($source, $destination);
                 }
             }
@@ -219,6 +238,8 @@ class TemplateRenderer
 
         $this->render('tags.html.twig', $data, $tagsPathname);
 
+        // TODO: Using a global 'tags' is pretty hacky, this should be formalised.
+        /** @var Tag $tag */
         foreach ($this->getGlobal('tags') as $tag) {
             $data = array(
                 'route' => 'tag',
@@ -238,6 +259,7 @@ class TemplateRenderer
      */
     public function renderArchives()
     {
+        // TODO: Using the global for this feels hacky.
         foreach ($this->getGlobal('archives') as $path => $archive) {
             $data = array(
                 'route'   => 'archive',
@@ -279,14 +301,22 @@ class TemplateRenderer
      * @param string $pathname Full pathname to write the file to.
      *
      * @return void
+     *
+     * @throws \Exception when template destination cannot be created
      */
     protected function render($name, $data, $pathname)
     {
         $template = $this->twig->render($name, array_merge($this->globalData, $data));
 
         if (! is_dir($dirname = dirname($pathname))) {
-            if (! mkdir($dirname, 0755, true)) {
-                throw new \Exception('Failed to create template destination: ' . $dirname);
+            $level = error_reporting(0);
+
+            try {
+                if (! mkdir($dirname, 0755, true)) {
+                    throw new \Exception('Failed to create template destination: ' . $dirname);
+                }
+            } finally {
+                error_reporting($level);
             }
         }
 

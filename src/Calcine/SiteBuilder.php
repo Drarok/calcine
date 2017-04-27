@@ -133,7 +133,6 @@ class SiteBuilder
         ksort($this->tags, SORT_NATURAL);
 
         // Build the archives.
-        $previousYear = $previousMonth = false;
         foreach ($this->posts as $post) {
             $key = $post->getDate()->format('Y/m');
 
