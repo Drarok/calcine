@@ -191,8 +191,13 @@ class Post
         }
 
         // Validate and store the headers.
+        $errors = [];
         foreach ($data as $name => $value) {
-            $this->processHeader($name, $value);
+            try {
+                $this->processHeader($name, $value);
+            } catch (Post\ParseException $e) {
+                $errors[] = $e->getMessage();
+            }
         }
 
         $body = '';
@@ -202,7 +207,15 @@ class Post
         $this->body = trim($body);
 
         if (! $this->body) {
-            throw new Post\ParseException('Body is empty or missing.');
+            $errors[] = 'Body is empty or missing.';
+        }
+
+        if ($errors) {
+            throw new Post\ParseException(sprintf(
+                'Failed to parse %s: %s',
+                $pathname,
+                implode(', ', $errors)
+            ));
         }
     }
 
@@ -222,11 +235,11 @@ class Post
 
         if ($name != 'body' && ! $value) {
             throw new Post\ParseException(sprintf(
-                '%s header must have a value.',
+                '%s header must have a value',
                 ucfirst($name)
             ));
         } elseif ($name == 'body' && $value) {
-            throw new Post\ParseException('Body header must not have a value.');
+            throw new Post\ParseException('Body header must not have a value');
         }
 
         switch ($name) {
@@ -246,7 +259,7 @@ class Post
             case 'slug':
                 if (! preg_match('/^[a-z0-9-]+$/', $value)) {
                     throw new Post\ParseException(sprintf(
-                        'Slug header is invalid: \'%s\'.',
+                        'Slug header is invalid: \'%s\'',
                         $value
                     ));
                 }
