@@ -30,14 +30,18 @@ $config = new Parser($configPath);
 $ansi = new Ansi();
 
 try {
+    $exitCode = 0;
+
     /** @var BaseCommand $command */
     $command = BaseCommand::factory($config, $cmd);
     $command->execute(array_slice($args, 1), $ansi);
 } catch (Exception $e) {
+    $exitCode = 1;
     $ansi->color([SGR::COLOR_FG_WHITE, SGR::COLOR_BG_RED])
         ->text($e->getMessage())
         ->lf()
     ;
-
-    exit(1);
+} finally {
+    $ansi->color([SGR::COLOR_FG_RESET, SGR::COLOR_BG_RESET]);
+    exit($exitCode);
 }
