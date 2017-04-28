@@ -276,6 +276,7 @@ class Post
                     },
                     explode(',', $value)
                 );
+                uksort($this->tags, 'strnatcasecmp');
                 break;
 
             case 'slug':
