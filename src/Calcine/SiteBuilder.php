@@ -128,8 +128,8 @@ class SiteBuilder
             $this->tags[$name] = $tag;
         }
 
-        // Sort tags by name.
-        ksort($this->tags, SORT_NATURAL);
+        // Sort tags by name, case insensitive.
+        uksort($this->tags, 'strnatcasecmp');
 
         // Build the archives.
         foreach ($this->posts as $post) {
