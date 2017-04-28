@@ -21,7 +21,7 @@ class NewPostCommand extends BaseCommand
 
         $filename = preg_replace('/[^a-z0-9-]/i', '-', $filename);
         $filename = preg_replace('/-+/', '-', $filename);
-        $filename = strtolower($filename);
+        $filename = trim(strtolower($filename), '-');
 
         $datetime = new DateTime();
         $date = $datetime->format('Y-m-d');

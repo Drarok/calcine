@@ -2,14 +2,14 @@
 
 namespace Calcine\Template\Engine;
 
-use Parsedown;
+use Calcine\Parsedown\CustomParsedownExtra;
 
 class Markdown implements EngineInterface
 {
     /**
      * Markdown renderer.
      *
-     * @var Parsedown
+     * @var CustomParsedownExtra
      */
     protected $markdown;
 
@@ -18,7 +18,7 @@ class Markdown implements EngineInterface
      */
     public function __construct()
     {
-        $this->markdown = new Parsedown();
+        $this->markdown = new CustomParsedownExtra();
     }
 
     /**

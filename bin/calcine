@@ -27,9 +27,9 @@ if (!in_array($cmd, $commands)) {
 $configPath = Path::join(__DIR__, '..', 'app', 'config', 'calcine.json');
 $config = new Parser($configPath);
 
-try {
-    $ansi = new Ansi();
+$ansi = new Ansi();
 
+try {
     /** @var BaseCommand $command */
     $command = BaseCommand::factory($config, $cmd);
     $command->execute(array_slice($args, 1), $ansi);
