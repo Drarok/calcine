@@ -14,5 +14,12 @@
         {% endif %}
     </div>
 
-    <div class="blog-post-body">{{ post.renderedBody | raw }}</div>
+    <div class="blog-post-body">
+        {% if link is defined and link %}
+            {{ post.renderedShortBody|raw }}
+            <a href="/{{ post.date|date('Y/m/d') ~ '/' ~ post.slug ~ '.html' }}">Read more&hellip;</a>
+        {% else %}
+            {{ post.renderedBody|raw }}
+        {% endif %}
+    </div>
 </div>

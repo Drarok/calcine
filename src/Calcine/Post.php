@@ -133,6 +133,28 @@ class Post
     }
 
     /**
+     * Get the shortened body, cut off at the jump.
+     *
+     * @return string
+     */
+    public function getRenderedShortBody()
+    {
+        $body = trim($this->getRenderedBody());
+
+        $jumpLocation = strpos(strtolower($body), '<!-- jump -->');
+
+        if ($jumpLocation === false) {
+            $jumpLocation = strpos($body, "\n\n");
+        }
+
+        if ($jumpLocation === false) {
+            return $body;
+        }
+
+        return substr($body, 0, $jumpLocation);
+    }
+
+    /**
      * Parse the given pathname into the current object.
      *
      * @param string $pathname Path to the post file.
