@@ -140,7 +140,6 @@ class TemplateRendererTest extends \PHPUnit_Framework_TestCase
 
         $expected = __DIR__ . '/data/archive.html';
         $actual = $this->webPath . '/2000/01/index.html';
-
         $this->assertFileEquals($expected, $actual);
     }
 

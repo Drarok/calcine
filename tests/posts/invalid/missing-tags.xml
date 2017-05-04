@@ -2,6 +2,6 @@
 <data>
     <exception>
         <class>Calcine\Post\ParseException</class>
-        <message>Tags header must have a value.</message>
+        <message>Tags header must have a value</message>
     </exception>
 </data>

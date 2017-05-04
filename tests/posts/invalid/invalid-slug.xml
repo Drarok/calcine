@@ -2,6 +2,6 @@
 <data>
     <exception>
         <class>Calcine\Post\ParseException</class>
-        <message>Slug header is invalid: 'Invalid Slug'.</message>
+        <message>Slug header is invalid: 'Invalid Slug'</message>
     </exception>
 </data>
