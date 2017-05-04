@@ -81,8 +81,7 @@ class CustomParsedownExtra extends ParsedownExtra
             }
         }
 
-        if (isset($classes))
-        {
+        if (isset($classes)) {
             $Data['class'] = implode(' ', $classes);
         }
 
