@@ -1,4 +1,4 @@
-# Calcine
+# Calcine [![Build Status](https://travis-ci.org/Drarok/calcine.svg?branch=develop)](https://travis-ci.org/Drarok/calcine)
 
 Calcine is a "baked" blog generator, using Markdown files to produce a site using only static assets.
 
