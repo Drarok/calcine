@@ -66,8 +66,8 @@ class TemplateRenderer
         $this->templatesPath = $templatesPath;
         $this->webPath = $webPath;
 
-        $loader = new Twig_Loader_Filesystem();
-        $this->twig = new Twig_Environment($loader);
+        $loader = new \Twig\Loader\FilesystemLoader();
+        $this->twig = new \Twig\Environment($loader);
 
         $this->setTheme('default');
     }

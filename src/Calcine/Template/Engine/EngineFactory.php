@@ -2,22 +2,27 @@
 
 namespace Calcine\Template\Engine;
 
+use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
+
 abstract class EngineFactory
 {
     /**
      * Create an Engine instance.
      *
-     * @param string $name Short name of the engine.
+     * @param string $name    Short name of the engine.
+     * @param ?array $options Options to pass to creation of the engine.
      *
      * @return EngineInterface
      *
      * @throws \Exception when invalid engine is requested.
      */
-    public static function createInstance($name)
+    public static function createInstance($name, ?array $options = null)
     {
         switch ($name) {
             case 'markdown':
-                return new Markdown();
+                $converter = new CommonMarkConverter();
+                return new Markdown($converter);
 
             case 'plaintext':
                 return new PlainText();
