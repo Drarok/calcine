@@ -1,20 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Calcine\SiteBuilder;
 use Calcine\Template\Engine\EngineFactory;
 use Calcine\Template\TemplateRenderer;
 use Calcine\User;
 
-class SiteBuilderTest extends \PHPUnit_Framework_TestCase
+class SiteBuilderTest extends TestCase
 {
     /**
      * @var SiteBuilder
      */
     private $builder;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

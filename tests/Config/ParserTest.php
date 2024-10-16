@@ -1,17 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests\Config;
 
+use PHPUnit\Framework\TestCase;
 use Calcine\Config\Parser;
 
-class ParserTest extends \PHPUnit_Framework_TestCase
+class ParserTest extends TestCase
 {
     /**
      * @var Parser
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new Parser(__DIR__ . '/data/parser.json');
@@ -19,13 +20,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
     public function testNoSuchFile()
     {
-        $this->setExpectedException(\Exception::class, 'Cannot read file \'/tmp/calcine-no-such-file\'');
+        $this->expectException(\Exception::class, 'Cannot read file \'/tmp/calcine-no-such-file\'');
         new Parser('/tmp/calcine-no-such-file');
     }
 
     public function testInvalidFile()
     {
-        $this->setExpectedException(\Exception::class, 'Syntax error');
+        $this->expectException(\Exception::class, 'Syntax error');
         new Parser(__DIR__ . '/data/invalid.json');
     }
 
@@ -44,7 +45,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->object->get($path, 'default'));
     }
 
-    public function getDataProvider()
+    public static function getDataProvider()
     {
         $testData = json_decode(file_get_contents(__DIR__ . '/data/parser.json'), true);
 

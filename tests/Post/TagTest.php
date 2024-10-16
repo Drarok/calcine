@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Test\Post;
 
+use PHPUnit\Framework\TestCase;
 use Calcine\Post\Tag;
 
-class TagTest extends \PHPUnit_Framework_TestCase
+class TagTest extends TestCase
 {
     public function testGetters()
     {

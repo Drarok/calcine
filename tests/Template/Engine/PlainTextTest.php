@@ -1,17 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests\Template\Engine;
 
+use PHPUnit\Framework\TestCase;
 use Calcine\Template\Engine\PlainText;
 
-class PlainTextTest extends \PHPUnit_Framework_TestCase
+class PlainTextTest extends TestCase
 {
     /**
      * @var PlainText
      */
     private $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new PlainText();
@@ -29,7 +30,7 @@ class PlainTextTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function renderDataProvider()
+    public static function renderDataProvider()
     {
         return array(
             array(''),

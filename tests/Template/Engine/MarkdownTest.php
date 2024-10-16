@@ -1,17 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests\Template\Engine;
 
+use PHPUnit\Framework\TestCase;
 use Calcine\Template\Engine\Markdown;
 
-class MarkdownTest extends \PHPUnit_Framework_TestCase
+class MarkdownTest extends TestCase
 {
     /**
      * @var Markdown
      */
     private $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new Markdown();
@@ -29,7 +30,7 @@ class MarkdownTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function renderDataProvider()
+    public static function renderDataProvider()
     {
         return array(
             array('', ''),

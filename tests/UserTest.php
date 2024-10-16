@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Calcine\User;
 
-class UserTest extends \PHPUnit_Framework_TestCase
+class UserTest extends TestCase
 {
     public function testGetters()
     {

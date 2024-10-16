@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests;
 
-class PathTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class PathTest extends TestCase
 {
     /**
      * Test the join method.
@@ -17,7 +19,7 @@ class PathTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, call_user_func_array('Calcine\\Path::join', $params));
     }
 
-    public function joinDataProvider()
+    public static function joinDataProvider()
     {
         return array(
             array('/usr/local/bin/php', '/usr', 'local', 'bin/', 'php'),

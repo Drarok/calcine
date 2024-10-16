@@ -1,14 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests\Parsedown;
 
+use PHPUnit\Framework\TestCase;
 use Calcine\Parsedown\CustomParsedownExtra;
 
-class CustomParsedownExtraTest extends \PHPUnit_Framework_TestCase
+class CustomParsedownExtraTest extends TestCase
 {
     private $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new CustomParsedownExtra();
@@ -37,7 +38,7 @@ class CustomParsedownExtraTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($attrCount, count($actualAttr));
     }
 
-    public function dataProviderFencedCodeBlocks()
+    public static function dataProviderFencedCodeBlocks()
     {
         return [
             ['`', false, 0],

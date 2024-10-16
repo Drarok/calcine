@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests\Template;
 
+use PHPUnit\Framework\TestCase;
 use Calcine\Path;
 use Calcine\Post;
 use Calcine\Post\Tag;
@@ -9,7 +10,7 @@ use Calcine\Template\Engine\Markdown;
 use Calcine\Template\TemplateRenderer;
 use Calcine\User;
 
-class TemplateRendererTest extends \PHPUnit_Framework_TestCase
+class TemplateRendererTest extends TestCase
 {
     /**
      * @var TemplateRenderer
@@ -26,7 +27,7 @@ class TemplateRendererTest extends \PHPUnit_Framework_TestCase
      */
     private $webPath;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

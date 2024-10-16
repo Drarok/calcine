@@ -1,17 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Calcine\Template\Engine\Markdown;
 use Calcine\Post;
 use Calcine\Post\Tag;
 
-class PostTest extends \PHPUnit_Framework_TestCase
+class PostTest extends TestCase
 {
     private $engine;
     private $errorLevel;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->engine = new Markdown();
@@ -20,7 +21,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
         $this->errorLevel = error_reporting(0);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         error_reporting($this->errorLevel);
@@ -28,7 +29,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
 
     public function testFailureWhenNoFile()
     {
-        $this->setExpectedException('Exception', 'Cannot open /path/to/nowhere');
+        $this->expectException('Exception', 'Cannot open /path/to/nowhere');
         new Post($this->engine, '/path/to/nowhere');
     }
 
@@ -59,9 +60,9 @@ class PostTest extends \PHPUnit_Framework_TestCase
      *
      * @return array
      */
-    public function validPostsDataProvider()
+    public static function validPostsDataProvider()
     {
-        return $this->getDataProviderForDirectory(__DIR__ . '/posts/valid');
+        return static::getDataProviderForDirectory(__DIR__ . '/posts/valid');
     }
 
     /**
@@ -77,7 +78,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidPosts($expectedException, $expectedMessage, $pathname)
     {
-        $this->setExpectedException($expectedException, $expectedMessage);
+        $this->expectException($expectedException, $expectedMessage);
         $post = new Post($this->engine, $pathname);
     }
 
@@ -86,12 +87,12 @@ class PostTest extends \PHPUnit_Framework_TestCase
      *
      * @return array
      */
-    public function invalidPostsDataProvider()
+    public static function invalidPostsDataProvider()
     {
-        return $this->getDataProviderForDirectory(__DIR__ . '/posts/invalid');
+        return static::getDataProviderForDirectory(__DIR__ . '/posts/invalid');
     }
 
-    protected function getDataProviderForDirectory($path)
+    protected static function getDataProviderForDirectory($path)
     {
         $result = [];
         $dir = new \DirectoryIterator($path);
