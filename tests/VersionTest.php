@@ -10,6 +10,6 @@ class VersionTest extends TestCase
     public function testGetters()
     {
         $version = Version::getVersion();
-        $this->assertRegExp('/^\d+\.\d+\.\d+$/', $version);
+        $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', $version);
     }
 }
