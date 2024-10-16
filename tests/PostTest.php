@@ -3,6 +3,9 @@
 namespace Calcine\Tests;
 
 use PHPUnit\Framework\TestCase;
+use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
+
 use Calcine\Template\Engine\Markdown;
 use Calcine\Post;
 use Calcine\Post\Tag;
@@ -15,7 +18,8 @@ class PostTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->engine = new Markdown();
+        $converter = new CommonMarkConverter();
+        $this->engine = new Markdown($converter);
 
         // This is required so we can test that fopen failures are handled.
         $this->errorLevel = error_reporting(0);

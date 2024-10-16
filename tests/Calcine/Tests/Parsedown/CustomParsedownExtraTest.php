@@ -11,8 +11,9 @@ class CustomParsedownExtraTest extends TestCase
 
     public function setUp(): void
     {
-        parent::setUp();
-        $this->object = new CustomParsedownExtra();
+        $this->markTestSkipped('Need to replace Parsedown');
+        // parent::setUp();
+        // $this->object = new CustomParsedownExtra();
     }
 
     /**

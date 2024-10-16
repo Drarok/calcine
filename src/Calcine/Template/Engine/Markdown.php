@@ -2,23 +2,18 @@
 
 namespace Calcine\Template\Engine;
 
-use Calcine\Parsedown\CustomParsedownExtra;
+use League\CommonMark\ConverterInterface;
 
 class Markdown implements EngineInterface
 {
-    /**
-     * Markdown renderer.
-     *
-     * @var CustomParsedownExtra
-     */
-    protected $markdown;
+    protected ConverterInterface $converter;
 
     /**
      * Constructor.
      */
-    public function __construct()
+    public function __construct(ConverterInterface $converter)
     {
-        $this->markdown = new CustomParsedownExtra();
+        $this->converter = $converter;
     }
 
     /**
@@ -34,6 +29,6 @@ class Markdown implements EngineInterface
      */
     public function render($string)
     {
-        return $this->markdown->text($string);
+        return $this->converter->convert($string)->getContent();
     }
 }
