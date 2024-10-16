@@ -23,7 +23,7 @@ class EngineFactoryTest extends TestCase
 
     public function testInvalid()
     {
-        $this->setExpectedException(\Exception::class, "Invalid rendering engine: 'invalid'");
+        $this->expectException(\Exception::class, "Invalid rendering engine: 'invalid'");
         EngineFactory::createInstance('invalid');
     }
 }

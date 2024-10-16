@@ -3,6 +3,8 @@
 namespace Calcine\Tests\Template\Engine;
 
 use PHPUnit\Framework\TestCase;
+use League\CommonMark\CommonMarkConverter;
+
 use Calcine\Template\Engine\Markdown;
 
 class MarkdownTest extends TestCase
@@ -15,7 +17,8 @@ class MarkdownTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->object = new Markdown();
+        $converter = new CommonMarkConverter();
+        $this->object = new Markdown($converter);
     }
 
     /**
@@ -27,7 +30,7 @@ class MarkdownTest extends TestCase
     public function testRender($source, $expected)
     {
         $actual = $this->object->render($source);
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expected, trim($actual));
     }
 
     public static function renderDataProvider()
