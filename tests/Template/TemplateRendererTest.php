@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Calcine\Path;
 use Calcine\Post;
 use Calcine\Post\Tag;
-use Calcine\Template\Engine\Markdown;
+use Calcine\Template\Engine\EngineFactory;
 use Calcine\Template\TemplateRenderer;
 use Calcine\User;
 
@@ -91,7 +91,7 @@ class TemplateRendererTest extends TestCase
             unlink($actualOutputPath);
         }
 
-        $engine = new Markdown();
+        $engine = EngineFactory::createInstance('markdown');
         $post = new Post($engine, __DIR__ . '/data/test-blog-post.markdown');
 
         $this->object->renderPost($post);
@@ -102,7 +102,7 @@ class TemplateRendererTest extends TestCase
 
     public function testRenderTags()
     {
-        $engine = new Markdown();
+        $engine = EngineFactory::createInstance('markdown');
         $posts = array(
             new Post($engine, __DIR__ . '/data/test-blog-post.markdown'),
         );
@@ -124,7 +124,7 @@ class TemplateRendererTest extends TestCase
 
     public function testRenderArchives()
     {
-        $engine = new Markdown();
+        $engine = EngineFactory::createInstance('markdown');
         $posts = array(
             new Post($engine, __DIR__ . '/data/test-blog-post.markdown'),
         );
@@ -155,7 +155,7 @@ class TemplateRendererTest extends TestCase
 
     public function testRenderSiteIndex()
     {
-        $engine = new Markdown();
+        $engine = EngineFactory::createInstance('markdown');
         $posts = array(
             new Post($engine, __DIR__ . '/data/test-blog-post.markdown'),
         );
