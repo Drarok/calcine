@@ -27,6 +27,9 @@ abstract class BaseCommand
         };
         $name = preg_replace_callback('/(?:^|-)([a-z])/i', $replacer, $name);
         $name = __NAMESPACE__ . '\\' . $name . 'Command';
+        if (!class_exists($name)) {
+            throw new \Exception("Class '$name' does not exist");
+        }
         return new $name($config);
     }
 
