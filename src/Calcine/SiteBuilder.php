@@ -23,6 +23,13 @@ class SiteBuilder
     protected $templateRenderer;
 
     /**
+     * Path to the root directory containing posts.
+     *
+     * @var string
+     */
+    protected $postsPath;
+
+    /**
      * Array of posts, keyed on tag then date.
      *
      * @var array
