@@ -29,6 +29,7 @@
     },
     "scripts": {
         "test": "phpunit",
-        "lint": "phpcs --standard=PSR2 -v src/ tests/"
+        "lint": "phpcs --standard=PSR2 -v src/ tests/",
+        "lint-checkstyle": "phpcs --standard=PSR2 --report=checkstyle -q src/ tests/"
     }
 }
