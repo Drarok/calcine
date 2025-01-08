@@ -8,6 +8,8 @@ use Calcine\Path;
 use Calcine\Config\Parser;
 use Calcine\Commands\BaseCommand;
 
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 define('CALCINE_ROOT', realpath(__DIR__ . '/..'));
@@ -31,13 +33,12 @@ $ansi = new Ansi();
 
 try {
     $exitCode = 0;
-
     /** @var BaseCommand $command */
     $command = BaseCommand::factory($config, $cmd);
     $command->execute(array_slice($args, 1), $ansi);
 } catch (Exception $e) {
     $exitCode = 1;
-    $ansi->color([SGR::COLOR_FG_WHITE, SGR::COLOR_BG_RED])
+    $ansi->color([SGR::COLOR_FG_RED])
         ->text($e->getMessage())
         ->lf()
     ;
