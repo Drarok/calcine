@@ -212,8 +212,8 @@ class TemplateRenderer
 
         $postPathname = Path::join(
             $this->webPath,
-            $post->getDate()->format('Y/m/d'),
-            $post->getSlug() . '.html'
+            $post->date->format('Y/m/d'),
+            $post->slug . '.html'
         );
 
         $this->render('post_page.html.twig', $data, $postPathname);

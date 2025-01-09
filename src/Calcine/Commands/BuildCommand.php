@@ -5,6 +5,7 @@ namespace Calcine\Commands;
 use Bramus\Ansi\Ansi;
 use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
 use Calcine\Path;
+use Calcine\PostsProvider\PostsProviderInterface;
 use Calcine\SiteBuilder;
 use Calcine\Template\Engine\EngineFactory;
 use Calcine\Template\TemplateRenderer;
@@ -42,7 +43,7 @@ class BuildCommand extends BaseCommand
         $site = new SiteBuilder(
             EngineFactory::createInstance($this->config->get('posts.format')),
             $renderer,
-            $this->config->get('posts.path')
+            $this->getPostsProvider()
         );
 
         $stats = $site->build();
@@ -60,5 +61,29 @@ class BuildCommand extends BaseCommand
             $stats['indexes'] == 1 ? 'index' : 'indexes'
         ));
         $ansi->lf();
+    }
+
+    private function getPostsProvider(): PostsProviderInterface
+    {
+        $postsProviderType = $this->config->get('posts.provider.type');
+
+        switch ($postsProviderType) {
+            case 'file':
+                $providerClass = \Calcine\PostsProvider\FilePostsProvider::class;
+                $providerArgs = [$this->config->get('posts.provider.path')];
+                break;
+            case 'strapi':
+                $providerClass = \Calcine\PostsProvider\StrapiPostsProvider::class;
+                $providerArgs = [
+                    $this->config->get('posts.provider.headers'),
+                    $this->config->get('posts.provider.root_url'),
+                ];
+                break;
+            default:
+                // TODO: Custom providers
+                throw new \Exception("Invalid posts provider: $postsProviderType");
+        }
+
+        return new $providerClass(...$providerArgs);
     }
 }
