@@ -36,11 +36,14 @@ try {
     /** @var BaseCommand $command */
     $command = BaseCommand::factory($config, $cmd);
     $command->execute(array_slice($args, 1), $ansi);
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $exitCode = 1;
     $ansi->color([SGR::COLOR_FG_RED])
         ->text($e->getMessage())
         ->lf()
+        ->text('    ' . $e->getFile() . ':' . $e->getLine())
+        ->lf()->lf()
+        ->text($e->getTraceAsString())
     ;
 } finally {
     $ansi->color([SGR::COLOR_FG_RESET, SGR::COLOR_BG_RESET]);
