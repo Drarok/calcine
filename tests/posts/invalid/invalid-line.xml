@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<data>
-    <exception>
-        <class>Calcine\Post\ParseException</class>
-        <message>Invalid header line in invalid-line.markdown: 'Totally invalid header line.'</message>
-    </exception>
-</data>

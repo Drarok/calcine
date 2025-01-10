@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 use Calcine\Path;
 use Calcine\Post;
 use Calcine\Post\Tag;
-use Calcine\Template\Engine\EngineFactory;
 use Calcine\Template\TemplateRenderer;
 use Calcine\User;
 
@@ -62,7 +61,7 @@ class TemplateRendererTest extends TestCase
 
     public function testCopyAssetsFailure()
     {
-        $this->expectException(\Exception::class, 'Failed to create asset path:');
+        $this->expectExceptionMessage('Failed to create asset path:');
 
         $user = new User('Eva Smith', 'esmith@example.org');
         $this->object = new TemplateRenderer($user, $this->templatesPath, '/invalid/path');
@@ -91,10 +90,7 @@ class TemplateRendererTest extends TestCase
             unlink($actualOutputPath);
         }
 
-        $engine = EngineFactory::createInstance('markdown');
-        $post = new Post($engine, __DIR__ . '/data/test-blog-post.markdown');
-
-        $this->object->renderPost($post);
+        $this->object->renderPost($this->makeTestPost());
 
         $expectedOutputPath = __DIR__ . '/data/test-blog-post.html';
         $this->assertFileEquals($expectedOutputPath, $actualOutputPath);
@@ -102,14 +98,13 @@ class TemplateRendererTest extends TestCase
 
     public function testRenderTags()
     {
-        $engine = EngineFactory::createInstance('markdown');
-        $posts = array(
-            new Post($engine, __DIR__ . '/data/test-blog-post.markdown'),
-        );
-        $tags = array(
+        $posts = [
+            $this->makeTestPost(),
+        ];
+        $tags = [
             new Tag('PHP', $posts),
             new Tag('Code', $posts),
-        );
+        ];
         $this->object->setGlobal('tags', $tags);
         $this->object->renderTags();
 
@@ -124,18 +119,17 @@ class TemplateRendererTest extends TestCase
 
     public function testRenderArchives()
     {
-        $engine = EngineFactory::createInstance('markdown');
-        $posts = array(
-            new Post($engine, __DIR__ . '/data/test-blog-post.markdown'),
-        );
+        $posts = [
+            $this->makeTestPost(),
+        ];
 
         $key = '2000/01';
-        $archives = array(
-            $key => array(
+        $archives = [
+            $key => [
                 'name' => 'January 2000',
                 'posts' => $posts,
-            ),
-        );
+            ],
+        ];
         $this->object->setGlobal('archives', $archives);
         $this->object->renderArchives();
 
@@ -149,21 +143,36 @@ class TemplateRendererTest extends TestCase
         $user = new User('Eva Smith', 'esmith@example.org');
         $this->object = new TemplateRenderer($user, $this->templatesPath, '/invalid/path');
 
-        $this->expectException(\Exception::class, 'Failed to create template destination:');
+        $this->expectExceptionMessage('Failed to create template destination:');
         $this->testRenderSiteIndex();
     }
 
     public function testRenderSiteIndex()
     {
-        $engine = EngineFactory::createInstance('markdown');
-        $posts = array(
-            new Post($engine, __DIR__ . '/data/test-blog-post.markdown'),
-        );
+        $posts = [
+            $this->makeTestPost(),
+        ];
 
         $this->object->renderSiteIndex($posts);
 
         $expected = __DIR__ . '/data/site-index.html';
         $actual = $this->webPath . '/index.html';
         $this->assertFileEquals($expected, $actual);
+    }
+
+    private function makeTestPost(): Post
+    {
+        $tags = [
+            new Tag('Tag'),
+            new Tag('Test'),
+            new Tag('PHP'),
+        ];
+        return new Post(
+            title: 'Test Blog Post',
+            tags: $tags,
+            slug: 'test-blog-post',
+            date: \DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', '2000-01-01 00:00:00'),
+            body: "This is the first paragraph.\n\nThis is the second paragraph.\n",
+        );
     }
 }

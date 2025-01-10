@@ -4,13 +4,11 @@ namespace Calcine;
 
 use Calcine\Post\Tag;
 use Calcine\PostsProvider\PostsProviderInterface;
-use Calcine\Template\Engine\EngineInterface;
 use Calcine\Template\TemplateRenderer;
 
 class SiteBuilder
 {
     public function __construct(
-        protected EngineInterface $engine,
         protected TemplateRenderer $templateRenderer,
         protected PostsProviderInterface $postsProvider
     ) {

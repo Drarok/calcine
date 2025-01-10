@@ -7,67 +7,31 @@ use Calcine\Path;
 use Calcine\Post;
 use Calcine\Post\Tag;
 
-use Twig_Environment;
-use Twig_Loader_Filesystem;
+use Twig\Loader\FilesystemLoader as TwigFileLoader;
 
 class TemplateRenderer
 {
-    /**
-     * Path to the templates.
-     *
-     * @var string
-     */
-    protected $templatesPath;
+    private CustomTwigEnvironment $twig;
 
-    /**
-     * Path to the web directory.
-     *
-     * @var string
-     */
-    protected $webPath;
+    private string $theme;
 
-    /**
-     * Twig environment.
-     *
-     * @var Twig_Environment
-     */
-    protected $twig;
-
-    /**
-     * Theme name.
-     *
-     * @var string
-     */
-    protected $theme = 'default';
-
-    /**
-     * Global data passed to all templates.
-     *
-     * @var array
-     */
-    protected $globalData = array(
+    private array $globalData = [
         'user'        => null,
         'title'       => '',
         'description' => '',
-        'tags'        => array(),
-        'archives'    => array(),
-    );
+        'tags'        => [],
+        'archives'    => [],
+    ];
 
-    /**
-     * Constructor.
-     *
-     * @param User   $user          User object.
-     * @param string $templatesPath Templates path.
-     * @param string $webPath       Web path.
-     */
-    public function __construct(User $user, $templatesPath, $webPath)
-    {
+    public function __construct(
+        User $user,
+        private string $templatesPath,
+        private string $webPath
+    ) {
         $this->setGlobal('user', $user);
-        $this->templatesPath = $templatesPath;
-        $this->webPath = $webPath;
 
-        $loader = new \Twig\Loader\FilesystemLoader();
-        $this->twig = new \Twig\Environment($loader);
+        $twigLoader = new TwigFileLoader();
+        $this->twig = new CustomTwigEnvironment($twigLoader);
 
         $this->setTheme('default');
     }
@@ -83,11 +47,11 @@ class TemplateRenderer
     {
         $this->theme = $theme;
 
-        $paths = array(
+        $paths = [
             Path::join($this->templatesPath, $theme),
-        );
+        ];
 
-        if ($theme != 'default') {
+        if ($theme !== 'default') {
             $paths[] = Path::join($this->templatesPath, 'default');
         }
 

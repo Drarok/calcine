@@ -2,13 +2,10 @@
 
 namespace Calcine\Commands;
 
-use DateTime;
-
 use Bramus\Ansi\Ansi;
 use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
 
 use Calcine\Path;
-use Calcine\Template\Engine\EngineFactory;
 
 class NewPostCommand extends BaseCommand
 {
@@ -23,7 +20,7 @@ class NewPostCommand extends BaseCommand
         $filename = preg_replace('/-+/', '-', $filename);
         $filename = trim(strtolower($filename), '-');
 
-        $datetime = new DateTime();
+        $datetime = new \DateTimeImmutable();
         $date = $datetime->format('Y-m-d');
         $now = $datetime->format('Y-m-d H:i:s');
 
@@ -51,8 +48,7 @@ EOF;
             }
         }
 
-        $ext = EngineFactory::createInstance($this->config->get('posts.format'))->getExtension();
-        $postName = sprintf('%s-%s.%s', $date, $filename, $ext);
+        $postName = sprintf('%s-%s.markdown', $date, $filename);
         $postPath = Path::join(CALCINE_ROOT, $postsPath, $postName);
 
         if (file_exists($postPath)) {

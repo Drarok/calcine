@@ -7,7 +7,6 @@ use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
 use Calcine\Path;
 use Calcine\PostsProvider\PostsProviderInterface;
 use Calcine\SiteBuilder;
-use Calcine\Template\Engine\EngineFactory;
 use Calcine\Template\TemplateRenderer;
 use Calcine\User;
 

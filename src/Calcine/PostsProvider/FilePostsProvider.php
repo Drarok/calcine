@@ -34,7 +34,7 @@ class FilePostsProvider extends AbstractPostsProvider
         return $posts;
     }
 
-    private function loadPost($path): Post
+    public function loadPost($path): Post
     {
         if (! ($file = fopen($path, 'r'))) {
             throw new ParseException("Cannot open $path");
@@ -51,7 +51,11 @@ class FilePostsProvider extends AbstractPostsProvider
         $errors = [];
 
         while (! feof($file)) {
-            $line = trim(fgets($file));
+            if (($line = fgets($file)) === false) {
+                continue;
+            }
+
+            $line = trim($line);
 
             // Skip blank or comment lines.
             if (! $line || $line[0] == ';') {
@@ -71,7 +75,7 @@ class FilePostsProvider extends AbstractPostsProvider
             }
 
             if (! array_key_exists($name, $data)) {
-                throw new ParseException("Unknown header in $basepath: \'$name\'.");
+                throw new ParseException("Unknown header in $basepath: '$name'.");
             }
 
             try {
@@ -89,6 +93,12 @@ class FilePostsProvider extends AbstractPostsProvider
 
         if (! $body) {
             $errors[] = 'Body is empty or missing.';
+        }
+
+        foreach ($data as $key => $value) {
+            if ($value === false) {
+                $errors[] = "Header '$key' is empty or missing.";
+            }
         }
 
         if ($errors) {
