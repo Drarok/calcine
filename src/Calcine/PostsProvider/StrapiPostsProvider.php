@@ -7,7 +7,8 @@ namespace Calcine\PostsProvider;
 use Calcine\Post;
 use Calcine\Post\Tag;
 
-class StrapiPostsProvider extends AbstractPostsProvider {
+class StrapiPostsProvider extends AbstractPostsProvider
+{
     private const string TYPE_POSTS = 'posts';
     private const string TYPE_TAGS = 'tags';
 

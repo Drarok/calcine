@@ -9,7 +9,6 @@ use Twig\Extra\Markdown\MarkdownRuntime;
 use Twig\Loader\LoaderInterface;
 use Twig\RuntimeLoader\RuntimeLoaderInterface;
 
-
 class CustomTwigEnvironment extends TwigEnvironment
 {
     public function __construct(LoaderInterface $loader, array $options = [])
@@ -18,7 +17,8 @@ class CustomTwigEnvironment extends TwigEnvironment
 
         $this->addExtension(new MarkdownExtension());
         $this->addRuntimeLoader(new class implements RuntimeLoaderInterface {
-            public function load($class) {
+            public function load($class)
+            {
                 if (MarkdownRuntime::class === $class) {
                     return new MarkdownRuntime(new DefaultMarkdown());
                 }

@@ -45,5 +45,4 @@ class SiteBuilder
             'indexes' => count($tags) + 2,
         ];
     }
-
 }
