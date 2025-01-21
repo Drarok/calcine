@@ -14,7 +14,7 @@
 
     <div class="blog-post-body">
         {%- if link is defined and link %}
-            {{- post.shortBody|markdown_to_html }}
+            {{- post.body|markdown_to_html|shorten_post_body }}
             <a href="/{{ post.date|date('Y/m/d') ~ '/' ~ post.slug ~ '.html' }}">Read more&hellip;</a>
         {% else %}
             {{- post.body|markdown_to_html -}}
