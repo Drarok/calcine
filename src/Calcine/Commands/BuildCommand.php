@@ -40,7 +40,6 @@ class BuildCommand extends BaseCommand
         ;
 
         $site = new SiteBuilder(
-            EngineFactory::createInstance($this->config->get('posts.format')),
             $renderer,
             $this->getPostsProvider()
         );
