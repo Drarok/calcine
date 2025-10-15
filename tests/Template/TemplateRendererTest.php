@@ -31,16 +31,21 @@ class TemplateRendererTest extends TestCase
         parent::setUp();
 
         $user = new User('Eva Smith', 'esmith@example.org');
-        $this->templatesPath = __DIR__ . '/../../app/templates';
-        $this->webPath = __DIR__ . '/../../tmp/web';
-
-        $webPath = realpath($this->webPath);
-        if ($webPath) {
-            shell_exec('rm -rf ' . escapeshellarg($webPath));
-            mkdir($webPath, 0755, true);
-        }
+        $this->templatesPath = realpath(__DIR__ . '/../../app/templates');
+        $this->webPath = $this->makeTemporaryDirectory();
 
         $this->object = new TemplateRenderer($user, $this->templatesPath, $this->webPath);
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        if (!is_dir($this->webPath)) {
+            return;
+        }
+
+        shell_exec('rm -rf ' . escapeshellarg($this->webPath));
     }
 
     public function testTheme()
@@ -158,6 +163,20 @@ class TemplateRendererTest extends TestCase
         $expected = __DIR__ . '/data/site-index.html';
         $actual = $this->webPath . '/index.html';
         $this->assertFileEquals($expected, $actual);
+    }
+
+    private function makeTemporaryDirectory(): string
+    {
+        $tmpRoot = sys_get_temp_dir();
+
+        do {
+            $id = mt_rand(1, 99999);
+            $dir = sprintf('%s/calcine-%05d', $tmpRoot, $id);
+        } while (is_dir($dir));
+
+        mkdir($dir);
+
+        return $dir;
     }
 
     private function makeTestPost(): Post
