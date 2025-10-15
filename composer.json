@@ -29,9 +29,7 @@
         "squizlabs/php_codesniffer": "^3.10.3"
     },
     "scripts": {
-        "docker:build": "docker build -t calcine:2.0-dev .",
-        "docker:test": "docker run --rm -it calcine:2.0-dev",
-        "test": "phpunit",
+        "test": "XDEBUG_MODE=coverage phpunit",
         "lint": "phpcs --standard=PSR2 src/ tests/",
         "lint-checkstyle": "phpcs --standard=PSR2 --report=checkstyle -q src/ tests/"
     }

@@ -2,5 +2,8 @@
 .github
 .gitignore
 Dockerfile
-generateTestFiles.php
 README.markdown
+generateTestFiles.php
+/scripts
+/tmp
+/vendor

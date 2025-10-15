@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+cmd="$1"
+shift
+
+case "$cmd" in
+    build )
+        docker build -t calcine:2.0-dev .
+        ;;
+    composer )
+        docker run --rm -v .:/var/www/app calcine:2.0-dev composer -- "$@"
+        ;;
+    shell )
+        docker run --rm -it -v .:/var/www/app calcine:2.0-dev sh
+        ;;
+    test )
+        docker run --rm -t -v .:/var/www/app calcine:2.0-dev composer -- run test
+        ;;
+esac
