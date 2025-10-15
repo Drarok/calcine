@@ -2,21 +2,19 @@
 
 namespace Calcine\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+
+use Calcine\Path;
 
 class PathTest extends TestCase
 {
-    /**
-     * Test the join method.
-     *
-     * @return void
-     *
-     * @dataProvider joinDataProvider
-     */
+    #[DataProvider('joinDataProvider')]
     public function testJoin($expected)
     {
         $params = array_slice(func_get_args(), 1);
-        $this->assertEquals($expected, call_user_func_array('Calcine\\Path::join', $params));
+        $actual = Path::join(...$params);
+        $this->assertEquals($expected, $actual);
     }
 
     public static function joinDataProvider()
