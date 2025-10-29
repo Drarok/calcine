@@ -3,8 +3,6 @@
 namespace Calcine;
 
 use Calcine\Post\Tag;
-// use Calcine\PagesProvider\PagesProviderInterface;
-// use Calcine\PostsProvider\PostsProviderInterface;
 use Calcine\Services\ContentProviderInterface;
 use Calcine\Template\TemplateRenderer;
 
@@ -27,6 +25,7 @@ class SiteBuilder
         $tags = $this->collectTags($posts);
         $archives = $this->collectArchives($posts);
 
+        $this->templateRenderer->setGlobal('pages', $pages);
         $this->templateRenderer->setGlobal('tags', $tags);
         $this->templateRenderer->setGlobal('archives', $archives);
 

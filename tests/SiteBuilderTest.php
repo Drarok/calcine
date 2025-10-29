@@ -3,7 +3,6 @@
 namespace Calcine\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Calcine\PostsProvider\FilePostsProvider;
 use Calcine\SiteBuilder;
 use Calcine\Template\Engine\EngineFactory;
 use Calcine\Template\TemplateRenderer;
@@ -11,9 +10,6 @@ use Calcine\User;
 
 class SiteBuilderTest extends TestCase
 {
-    /**
-     * @var SiteBuilder
-     */
     private $builder;
 
     public function setUp(): void
@@ -27,10 +23,8 @@ class SiteBuilderTest extends TestCase
         $webPath = __DIR__ . '/../tmp/web';
         $renderer = new TemplateRenderer($user, $templatesPath, $webPath);
 
-        $postsPath = __DIR__ . '/posts';
-        $postsProvider = new FilePostsProvider($postsPath);
-
-        $this->builder = new SiteBuilder($renderer, $postsProvider);
+        // TODO: Create SiteBuilder instance
+        $this->builder = new SiteBuilder(/* ... */);
     }
 
     public function testBuild()

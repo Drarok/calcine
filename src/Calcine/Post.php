@@ -4,12 +4,16 @@ namespace Calcine;
 
 use Calcine\Post\Tag;
 
+final class PostParseException extends \Exception {}
+
 readonly class Post
 {
     public static function fromJson(array $json): Post
     {
         $title = trim($json['title']);
-        $tags = array_map(fn ($tag) => new Tag(trim($tag)), $json['tags']);
+        $tags = array_map('trim', $json['tags']);
+        natsort($tags);
+        $tags = array_map(fn ($name) => new Tag($name), $tags);
         $slug = trim($json['slug']);
         $date = static::makeDate($json['date']);
         $body = trim($json['body']);
@@ -39,7 +43,7 @@ readonly class Post
             }
         }
 
-        throw new \Exception('Invalid date: ' . $value);
+        throw new PostParseException('Invalid date: ' . $value);
     }
 
     public function __construct(
@@ -55,8 +59,13 @@ readonly class Post
                 $errors[] = "tag at index $index";
             }
         }
+
+        if (! preg_match('/^[a-z0-9-]+$/', $slug)) {
+            $errors[] = "Field 'slug' is invalid: '$slug'";
+        }
+
         if ($errors) {
-            throw new \Exception('Invalid data: ' . implode(', ', $errors));
+            throw new PostParseException('Invalid data: ' . implode(', ', $errors));
         }
     }
 }
