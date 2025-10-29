@@ -6,6 +6,11 @@ use Calcine\Post;
 
 readonly class Tag
 {
+    public static function fromJson(array $json): Tag
+    {
+        return new Tag($json['name'], $json['posts'] ?? []);
+    }
+
     public function __construct(public string $name, public array $posts = [])
     {
     }

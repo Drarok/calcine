@@ -10,8 +10,9 @@ cd calcine
 composer install
 cp app/config/calcine.json.sample app/config/calcine.json
 edit app/config/calcine.json
-bin/calcine new-post blog-post-filename
-# You now need to edit the file created by the previous command ^
+
+# You now need to create a file or make a post in your CMS, then:
+
 bin/calcine build
 ```
 

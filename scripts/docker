@@ -14,6 +14,9 @@ case "$cmd" in
         docker run --rm -it -v .:/var/www/app calcine:2.0-dev sh
         ;;
     test )
-        docker run --rm -t -v .:/var/www/app calcine:2.0-dev composer -- run test
+        docker run --rm -t -v .:/var/www/app calcine:2.0-dev composer -- run test "$@"
+        ;;
+    * )
+        echo RANDOM
         ;;
 esac

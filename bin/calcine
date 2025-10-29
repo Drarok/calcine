@@ -5,7 +5,7 @@ use Bramus\Ansi\Ansi;
 use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
 
 use Calcine\Path;
-use Calcine\Config\Parser;
+use Calcine\Config\ConfigParser;
 use Calcine\Commands\BaseCommand;
 
 error_reporting(E_ALL);
@@ -27,7 +27,7 @@ if (!in_array($cmd, $commands)) {
 }
 
 $configPath = Path::join(__DIR__, '..', 'app', 'config', 'calcine.json');
-$config = new Parser($configPath);
+$config = new ConfigParser($configPath);
 
 $ansi = new Ansi();
 

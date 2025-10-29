@@ -41,7 +41,7 @@ class BuildCommand extends BaseCommand
 
         $site = new SiteBuilder(
             $renderer,
-            $this->getPostsProvider()
+            $this->config->makeContentProvider(),
         );
 
         $stats = $site->build();
@@ -59,29 +59,5 @@ class BuildCommand extends BaseCommand
             $stats['indexes'] == 1 ? 'index' : 'indexes'
         ));
         $ansi->lf();
-    }
-
-    private function getPostsProvider(): PostsProviderInterface
-    {
-        $postsProviderType = $this->config->get('posts.provider.type');
-
-        switch ($postsProviderType) {
-            case 'file':
-                $providerClass = \Calcine\PostsProvider\FilePostsProvider::class;
-                $providerArgs = [$this->config->get('posts.provider.path')];
-                break;
-            case 'strapi':
-                $providerClass = \Calcine\PostsProvider\StrapiPostsProvider::class;
-                $providerArgs = [
-                    $this->config->get('posts.provider.headers'),
-                    $this->config->get('posts.provider.root_url'),
-                ];
-                break;
-            default:
-                // TODO: Custom providers
-                throw new \Exception("Invalid posts provider: $postsProviderType");
-        }
-
-        return new $providerClass(...$providerArgs);
     }
 }

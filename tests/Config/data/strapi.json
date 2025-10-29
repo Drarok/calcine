@@ -1,0 +1,19 @@
+{
+    "user": {
+        "name": "Jem Godfrey",
+        "email": "example@example.org"
+    },
+    "content": {
+        "adaptor": "strapi",
+        "headers": [],
+        "root_url": "http://strapi"
+    },
+    "web": {
+        "path": "web"
+    },
+    "site": {
+        "theme": "default",
+        "title": "Site Title",
+        "description": "Site description is a little longer and wiser."
+    }
+}

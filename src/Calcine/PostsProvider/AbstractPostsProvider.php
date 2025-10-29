@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Calcine\PostsProvider;
 
+use Calcine\Post;
 use Calcine\Post\Tag;
 
 abstract class AbstractPostsProvider implements PostsProviderInterface
@@ -18,7 +19,9 @@ abstract class AbstractPostsProvider implements PostsProviderInterface
             return $this->posts;
         }
 
-        return $this->posts = $this->loadPosts();
+        $posts = $this->loadPosts();
+        usort($posts, [$this, 'sortPostsDescending']);
+        return $this->posts = $posts;
     }
 
     public function getTags(): array
@@ -65,5 +68,17 @@ abstract class AbstractPostsProvider implements PostsProviderInterface
         }
 
         return $archives;
+    }
+
+    private function sortPostsDescending(Post $a, Post $b): int
+    {
+        $dateA = $a->date;
+        $dateB = $b->date;
+
+        if ($dateA == $dateB) {
+            return 0;
+        } else {
+            return $dateA < $dateB ? 1 : -1;
+        }
     }
 }

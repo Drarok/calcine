@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Calcine\PostsProvider;
+namespace Calcine\PagesProvider;
 
 use Calcine\Strapi\StrapiClientInterface;
 
-class StrapiPostsProvider extends AbstractPostsProvider
+class StrapiPagesProvider extends AbstractPagesProvider
 {
     public function __construct(private StrapiClientInterface $strapi) {
     }
 
-    protected function loadPosts(): array
+    protected function loadPages(): array
     {
-        $iterator = $this->strapi->fetchPosts();
+        $iterator = $this->strapi->fetchPages();
         return iterator_to_array($iterator);
     }
 }

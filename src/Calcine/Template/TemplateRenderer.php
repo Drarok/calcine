@@ -1,11 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Template;
 
-use Calcine\User;
+use Calcine\Model\Page;
 use Calcine\Path;
 use Calcine\Post;
 use Calcine\Post\Tag;
+use Calcine\User;
 
 use Twig\Loader\FilesystemLoader as TwigFileLoader;
 
@@ -161,18 +162,11 @@ class TemplateRenderer
         }
     }
 
-    /**
-     * Render a post to the web directory, returning its pathname.
-     *
-     * @param Post $post Post object.
-     *
-     * @return void
-     */
-    public function renderPost(Post $post)
+    public function renderPost(Post $post): void
     {
-        $data = array(
+        $data = [
             'post' => $post,
-        );
+        ];
 
         $postPathname = Path::join(
             $this->webPath,
@@ -181,6 +175,21 @@ class TemplateRenderer
         );
 
         $this->render('post_page.html.twig', $data, $postPathname);
+    }
+
+    public function renderPage(Page $page): void
+    {
+        $data = [
+            'page' => $page,
+        ];
+
+        $pathname = Path::join(
+            $this->webPath,
+            'pages',
+            $page->slug . '.html'
+        );
+
+        $this->render('page.html.twig', $data, $pathname);
     }
 
     /**
