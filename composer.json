@@ -1,7 +1,6 @@
 {
     "name": "zerifas/calcine",
     "description": "A baked blog generator.",
-    "version": "2.0.0-dev",
     "license": "MIT",
     "authors": [
         {
