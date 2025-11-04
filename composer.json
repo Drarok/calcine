@@ -1,6 +1,7 @@
 {
     "name": "zerifas/calcine",
     "description": "A baked blog generator.",
+    "version": "2.0.0-dev",
     "license": "MIT",
     "authors": [
         {
@@ -25,9 +26,9 @@
     },
     "require": {
         "bramus/ansi-php": "~3.0",
-        "league/commonmark": "^2.6",
         "twig/twig": "^3.18",
-        "twig/markdown-extra": "^3.18"
+        "twig/markdown-extra": "^3.18",
+        "league/commonmark": "^2.7"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.4.1",
