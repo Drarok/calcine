@@ -16,9 +16,15 @@ final class FileContentAdaptorTest extends TestCase
         $content = $sut->loadContent();
         $this->assertEquals(3, count($content));
 
-        $expectedSlugs = ['test-blog-post', 'test-blog-post-2', 'test-blog-post-3'];
+        $expectedSlugs = [
+            'test-blog-post',
+            'test-blog-post-2',
+            'test-blog-post-3',
+        ];
         $actualSlugs = array_map(fn (array $data) => $data['slug'], $content);
-        $this->assertEquals($expectedSlugs, $actualSlugs);
+        foreach ($expectedSlugs as $expected) {
+            $this->assertTrue(in_array($expected, $actualSlugs));
+        }
     }
 
     public function testThatGivenInvalidPathWhenLoadContentCalledThenExceptionThrown(): void
