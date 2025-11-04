@@ -76,7 +76,10 @@ class ConfigParserTest extends TestCase
 
             $post = [
                 'title' => 'Title',
-                'tags' => ['tag1', 'tag2'],
+                'tags' => [
+                    ['name' => 'tag1'],
+                    ['name' => 'tag2'],
+                ],
                 'slug' => 'title',
                 'date' => $expectedDate,
                 'body' => $expectedBody,

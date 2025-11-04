@@ -58,7 +58,10 @@ class StrapiClientTest extends TestCase
         $this->http->onGet = function () {
             $post = [
                 'title' => 'Example Post',
-                'tags' => ['tag1', 'tag2'],
+                'tags' => [
+                    ['name' => 'tag1'],
+                    ['name' => 'tag2'],
+                ],
                 'slug' => 'example-post',
                 'date' => '2025-10-28 15:47:00',
                 'body' => '## Example Post',

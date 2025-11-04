@@ -34,7 +34,19 @@ final class StrapiClient implements StrapiClientInterface
             'body',
         ];
         $populate = ['tags' => ['fields' => 'name']];
-        yield from $this->fetch(StrapiContentType::Posts, $fields, 'date:desc', $populate);
+        $generator = $this->fetch(StrapiContentType::Posts, $fields, 'date:desc', $populate);
+
+        $unwrapTag = fn (array $tag) => $tag['name'];
+
+        foreach ($generator as $post) {
+            $post['tags'] = array_map($unwrapTag, $post['tags']);
+            yield $post;
+        }
+    }
+
+    private function unwrapTag(array $tag): string
+    {
+        return $tag['name'];
     }
 
     private function fetch(
