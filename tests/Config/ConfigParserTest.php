@@ -38,7 +38,7 @@ class ConfigParserTest extends TestCase
         $this->assertEquals($expected, $this->object->get($path, 'default'));
     }
 
-    public function testThat_GivenStrapiContentProvider_WhenGetPagesCalled_ThenResultIsCorrect(): void
+    public function testThatGivenStrapiContentProviderWhenGetPagesCalledThenResultIsCorrect(): void
     {
         $expectedBody = 'This is the page body.';
 
@@ -66,7 +66,7 @@ class ConfigParserTest extends TestCase
         $this->assertEquals($expectedBody, $page->body);
     }
 
-    public function testThat_GivenStrapiContentProvider_WhenGetPostsCalled_ThenResultIsCorrect(): void
+    public function testThatGivenStrapiContentProviderWhenGetPostsCalledThenResultIsCorrect(): void
     {
         $expectedDate = '2025-10-29 02:08:00';
         $expectedBody = 'This is the post body.';
@@ -98,7 +98,7 @@ class ConfigParserTest extends TestCase
         $this->assertEquals($expectedBody, $post->body);
     }
 
-    public function testThat_GivenFileContentProvider_WhenGetPagesCalled_ThenResultIsCorrect(): void
+    public function testThatGivenFileContentProviderWhenGetPagesCalledThenResultIsCorrect(): void
     {
         $expectedBody = '## Example Page';
 
@@ -113,7 +113,7 @@ class ConfigParserTest extends TestCase
         $this->assertEquals($expectedBody, $page->body);
     }
 
-    public function testThat_GivenFileContentProvider_WhenGetPostsCalled_ThenResultIsCorrect(): void
+    public function testThatGivenFileContentProviderWhenGetPostsCalledThenResultIsCorrect(): void
     {
         $expectedBody = '## Example Post';
 

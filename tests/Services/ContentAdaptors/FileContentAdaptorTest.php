@@ -9,7 +9,7 @@ use Calcine\Services\ContentAdaptors\FileContentAdaptor;
 
 final class FileContentAdaptorTest extends TestCase
 {
-    public function testThat_GivenValidSetup_WhenLoadContentCalled_ThenContentsAreCorrect(): void
+    public function testThatGivenValidSetupWhenLoadContentCalledThenContentsAreCorrect(): void
     {
         $rootDir = realpath(__DIR__ . '/../../posts');
         $sut = new FileContentAdaptor($rootDir);
@@ -21,7 +21,7 @@ final class FileContentAdaptorTest extends TestCase
         $this->assertEquals($expectedSlugs, $actualSlugs);
     }
 
-    public function testThat_GivenInvalidPath_WhenLoadContentCalled_ThenExceptionThrown(): void
+    public function testThatGivenInvalidPathWhenLoadContentCalledThenExceptionThrown(): void
     {
         $this->expectException(\UnexpectedValueException::class);
 
@@ -29,7 +29,7 @@ final class FileContentAdaptorTest extends TestCase
         $sut->loadContent();
     }
 
-    public function testThat_GivenInvalidFiles_WhenLoadContentCalled_ThenExceptionIsThrown(): void
+    public function testThatGivenInvalidFilesWhenLoadContentCalledThenExceptionIsThrown(): void
     {
         $this->expectException(ContentAdaptorException::class);
 

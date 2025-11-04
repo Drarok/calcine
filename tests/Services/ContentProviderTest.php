@@ -40,7 +40,7 @@ final class ContentProviderTest extends TestCase
         $this->assertEquals('description', $this->sut->getDescription());
     }
 
-    public function testThat_GivenPageAdaptor_WhenGetPagesCalled_ThenContentIsCorrect()
+    public function testThatGivenPageAdaptorWhenGetPagesCalledThenContentIsCorrect()
     {
         $expectedContent = [
             $this->makePage(1),
@@ -68,7 +68,7 @@ final class ContentProviderTest extends TestCase
         ];
     }
 
-    public function testThat_GivenPostAdaptor_WhenGetPostsCalled_ThenContentIsCorrect()
+    public function testThatGivenPostAdaptorWhenGetPostsCalledThenContentIsCorrect()
     {
         $expectedContent = [
             $this->makePost(1),
@@ -101,10 +101,9 @@ final class ContentProviderTest extends TestCase
             'date' => $date,
             'body' => $body,
         ];
-        // return new Post($title, $tags, $slug, $date, $body);
     }
 
-    public function testThat_GivenWarmedCache_WhenGetMethodsCalled_ThenAdaptorsAreNotCalled()
+    public function testThatGivenWarmedCacheWhenGetMethodsCalledThenAdaptorsAreNotCalled()
     {
         // Given
         $expectedPages = [

@@ -8,7 +8,8 @@ readonly class BuildStats
         public int $pages,
         public int $posts,
         public int $tags,
-    ) {}
+    ) {
+    }
 
     public function formatPages(): string
     {

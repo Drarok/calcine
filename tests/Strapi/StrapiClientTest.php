@@ -26,7 +26,7 @@ class StrapiClientTest extends TestCase
         );
     }
 
-    public function testThat_GivenValidData_WhenFetchPagesCalled_ThenResultsAreValid()
+    public function testThatGivenValidDataWhenFetchPagesCalledThenResultsAreValid()
     {
         $this->http->onGet = function () {
             $page = [
@@ -53,7 +53,7 @@ class StrapiClientTest extends TestCase
         $this->assertEquals('## Example Page', $page['body']);
     }
 
-    public function testThat_GivenValidData_WhenFetchPostsCalled_ThenResultsAreValid()
+    public function testThatGivenValidDataWhenFetchPostsCalledThenResultsAreValid()
     {
         $this->http->onGet = function () {
             $post = [

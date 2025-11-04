@@ -37,8 +37,12 @@ final class StrapiClient implements StrapiClientInterface
         yield from $this->fetch(StrapiContentType::Posts, $fields, 'date:desc', $populate);
     }
 
-    private function fetch(StrapiContentType $contentType, array $fields, string $sort, ?array $populate = null): \Generator
-    {
+    private function fetch(
+        StrapiContentType $contentType,
+        array $fields,
+        string $sort,
+        ?array $populate = null
+    ): \Generator {
         $limit = 5;
         $start = 0;
 

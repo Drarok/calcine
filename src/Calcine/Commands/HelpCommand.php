@@ -7,8 +7,6 @@ use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
 use Calcine\Path;
 use Calcine\SiteBuilder;
 use Calcine\Template\TemplateRenderer;
-use Calcine\User;
-
 
 class HelpCommand extends BaseCommand
 {
