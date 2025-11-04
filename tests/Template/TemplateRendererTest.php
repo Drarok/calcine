@@ -3,38 +3,62 @@
 namespace Calcine\Tests\Template;
 
 use PHPUnit\Framework\TestCase;
+
+use Calcine\Model\BuildStats;
+use Calcine\Model\Page;
+use Calcine\Model\Post;
+use Calcine\Model\Tag;
 use Calcine\Path;
-use Calcine\Post;
-use Calcine\Post\Tag;
+use Calcine\Services\ContentProviderInterface;
 use Calcine\Template\TemplateRenderer;
 use Calcine\User;
 
+final class MockContentProvider implements ContentProviderInterface
+{
+    public string $title = 'title';
+
+    public string $description = 'description';
+
+    public array $pages = [];
+
+    public array $posts = [];
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function getPages(): array
+    {
+        return $this->pages;
+    }
+
+    public function getPosts(): array
+    {
+        return $this->posts;
+    }
+
+}
+
 class TemplateRendererTest extends TestCase
 {
-    /**
-     * @var TemplateRenderer
-     */
-    private $object;
+    private string $templatesPath = '';
+    private string $webPath = '';
 
-    /**
-     * @var string
-     */
-    private $templatesPath;
-
-    /**
-     * @var string
-     */
-    private $webPath;
+    private ?MockContentProvider $content;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $user = new User('Eva Smith', 'esmith@example.org');
         $this->templatesPath = realpath(__DIR__ . '/../../app/templates');
         $this->webPath = $this->makeTemporaryDirectory();
-
-        $this->object = new TemplateRenderer($user, $this->templatesPath, $this->webPath);
+        $this->content = new MockContentProvider();
     }
 
     public function tearDown(): void
@@ -45,39 +69,31 @@ class TemplateRendererTest extends TestCase
             return;
         }
 
-        shell_exec('rm -rf ' . escapeshellarg($this->webPath));
-    }
-
-    public function testTheme()
-    {
-        $theme = 'lumen';
-
-        $this->object->setTheme($theme);
-        $this->assertEquals($theme, $this->object->getTheme());
-    }
-
-    public function testGlobal()
-    {
-        $global = 'This is a global var';
-
-        $this->object->setGlobal('global', $global);
-        $this->assertEquals($global, $this->object->getGlobal('global'));
+        // shell_exec('rm -rf ' . escapeshellarg($this->webPath));
     }
 
     public function testCopyAssetsFailure()
     {
         $this->expectExceptionMessage('Failed to create asset path:');
 
-        $user = new User('Eva Smith', 'esmith@example.org');
-        $this->object = new TemplateRenderer($user, $this->templatesPath, '/invalid/path');
-
-        $this->object->copyAssets();
+        $sut = $this->makeSut(null, '/invalid/path');
+        $sut->copyAssets();
     }
 
-    public function testCopyAssets()
+    public function testCopyAssetsWithDefaultTheme()
     {
-        $this->object->setTheme('lumen');
-        $this->object->copyAssets();
+        $sut = $this->makeSut();
+        $sut->copyAssets();
+
+        $source = Path::join(realpath($this->templatesPath), 'default', 'css', 'site.css');
+        $destination = Path::join(realpath($this->webPath), 'css', 'site.css');
+        $this->assertFileEquals($source, $destination);
+    }
+
+    public function testCopyAssetsWithCustomTheme()
+    {
+        $sut = $this->makeSut(null, null, 'lumen');
+        $sut->copyAssets();
 
         $source = Path::join(realpath($this->templatesPath), 'lumen', 'css', 'bootstrap.min.css');
         $destination = Path::join(realpath($this->webPath), 'css', 'bootstrap.min.css');
@@ -88,91 +104,52 @@ class TemplateRendererTest extends TestCase
         $this->assertFileEquals($source, $destination);
     }
 
-    public function testRenderPost()
+    public function testBuild(): void
     {
-        $this->markTestSkipped('Needs refactor');
+        $this->content->pages = [
+            $this->makePage(),
+        ];
+        $this->content->posts = [
+            $this->makePost(),
+        ];
 
-        $actualOutputPath = $this->webPath . '/2000/01/01/test-blog-post.html';
-        if (file_exists($actualOutputPath)) {
-            unlink($actualOutputPath);
+        $sut = $this->makeSut();
+        $stats = $sut->build();
+
+        $expectedWebFiles = [
+            'index.html',
+            'pages/test-page-slug.html',
+            '2025/11/04/test-post-slug.html',
+            '2025/11/index.html',
+        ];
+
+        foreach ($expectedWebFiles as $name) {
+            $pathname = Path::join(
+                realpath($this->webPath),
+                $name,
+            );
+
+            $this->assertFileExists($pathname);
         }
-
-        $this->object->renderPost($this->makeTestPost());
-
-        $expectedOutputPath = __DIR__ . '/data/test-blog-post.html';
-        $this->assertFileEquals($expectedOutputPath, $actualOutputPath);
     }
 
-    public function testRenderTags()
-    {
-        $this->markTestSkipped('Needs refactor');
-
-        $posts = [
-            $this->makeTestPost(),
-        ];
-        $tags = [
-            new Tag('PHP', $posts),
-            new Tag('Code', $posts),
-        ];
-        $this->object->setGlobal('tags', $tags);
-        $this->object->renderTags();
-
-        $expected = __DIR__ . '/data/tags-index.html';
-        $actual = $this->webPath . '/tags/index.html';
-        $this->assertFileEquals($expected, $actual);
-
-        $expected = __DIR__ . '/data/tags-php.html';
-        $actual = $this->webPath . '/tags/php.html';
-        $this->assertFileEquals($expected, $actual);
-    }
-
-    public function testRenderArchives()
-    {
-        $this->markTestSkipped('Needs refactor');
-
-        $posts = [
-            $this->makeTestPost(),
-        ];
-
-        $key = '2000/01';
-        $archives = [
-            $key => [
-                'name' => 'January 2000',
-                'posts' => $posts,
-            ],
-        ];
-        $this->object->setGlobal('archives', $archives);
-        $this->object->renderArchives();
-
-        $expected = __DIR__ . '/data/archive.html';
-        $actual = $this->webPath . '/2000/01/index.html';
-        $this->assertFileEquals($expected, $actual);
-    }
-
-    public function testRenderSiteIndexFailure()
-    {
+    private function makeSut(
+        ?string $templatesPath = null,
+        ?string $webPath = null,
+        string $theme = 'default'
+    ): TemplateRenderer {
         $user = new User('Eva Smith', 'esmith@example.org');
-        $this->object = new TemplateRenderer($user, $this->templatesPath, '/invalid/path');
 
-        $this->expectExceptionMessage('Failed to create template destination:');
-        $this->testRenderSiteIndex();
+        return new TemplateRenderer(
+            $this->content,
+            $user,
+            $templatesPath ?? $this->templatesPath,
+            $webPath ?? $this->webPath,
+            $theme,
+        );
     }
 
-    public function testRenderSiteIndex()
-    {
-        $this->markTestSkipped('Needs refactor');
-
-        $posts = [
-            $this->makeTestPost(),
-        ];
-
-        $this->object->renderSiteIndex($posts);
-
-        $expected = __DIR__ . '/data/site-index.html';
-        $actual = $this->webPath . '/index.html';
-        $this->assertFileEquals($expected, $actual);
-    }
-
+    // TODO: Refactor this to be reusable.
     private function makeTemporaryDirectory(): string
     {
         $tmpRoot = sys_get_temp_dir();
@@ -187,19 +164,27 @@ class TemplateRendererTest extends TestCase
         return $dir;
     }
 
-    private function makeTestPost(): Post
+    private function makePage(): Page
+    {
+        return new Page(
+            'Test Page Title',
+            'test-page-slug',
+            'This is a _test_ page'
+        );
+    }
+
+    private function makePost(): Post
     {
         $tags = [
-            new Tag('Tag'),
-            new Tag('Test'),
-            new Tag('PHP'),
+            new Tag('Tag1'),
+            new Tag('Tag2'),
         ];
         return new Post(
-            title: 'Test Blog Post',
-            tags: $tags,
-            slug: 'test-blog-post',
-            date: \DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', '2000-01-01 00:00:00'),
-            body: "This is the first paragraph.\n\nThis is the second paragraph.\n",
+            'Test Post Title',
+            $tags,
+            'test-post-slug',
+            \DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', '2025-11-04 20:07:00'),
+            'This is a _test_ post'
         );
     }
 }

@@ -53,6 +53,8 @@ class ConfigParser
     public function makeContentProvider(): ContentProviderInterface
     {
         return new ContentProvider(
+            $this->get('site.title', ''),
+            $this->get('site.description', ''),
             $this->makePagesAdaptor(),
             $this->makePostsAdaptor(),
         );

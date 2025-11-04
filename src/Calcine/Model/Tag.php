@@ -1,8 +1,6 @@
 <?php
 
-namespace Calcine\Post;
-
-use Calcine\Post;
+namespace Calcine\Model;
 
 readonly class Tag
 {
@@ -15,12 +13,7 @@ readonly class Tag
     {
     }
 
-    /**
-     * Gets the slug.
-     *
-     * @return string
-     */
-    public function getSlug()
+    public function getSlug(): string
     {
         return trim(preg_replace('/[^a-z0-9-]+/', '-', strtolower($this->name)), '-');
     }

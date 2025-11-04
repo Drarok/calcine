@@ -8,6 +8,7 @@ use Calcine\Services\ContentProvider;
 use Calcine\Services\ContentProviderInterface;
 use Calcine\Tests\Mocks\MockContentAdaptor;
 
+// TODO: Find out why this isn't covered by the autoloader.
 require __DIR__ . '/../Mocks/MockContentAdaptor.php';
 
 final class ContentProviderTest extends TestCase
@@ -25,9 +26,21 @@ final class ContentProviderTest extends TestCase
         $postsAdaptor = $this->postsAdaptor = new MockContentAdaptor();
 
         $this->sut = new ContentProvider(
+            'title',
+            'description',
             $pagesAdaptor,
             $postsAdaptor,
         );
+    }
+
+    public function testGetTitle(): void
+    {
+        $this->assertEquals('title', $this->sut->getTitle());
+    }
+
+    public function testGetDescription(): void
+    {
+        $this->assertEquals('description', $this->sut->getDescription());
     }
 
     public function testThat_GivenPageAdaptor_WhenGetPagesCalled_ThenContentIsCorrect()

@@ -7,6 +7,9 @@ case "$cmd" in
     build )
         docker build -t calcine:2.0-dev .
         ;;
+    calcine )
+        docker run --rm -it -v .:/var/www/app calcine:2.0-dev bin/calcine "$@"
+        ;;
     composer )
         docker run --rm -v .:/var/www/app calcine:2.0-dev composer -- "$@"
         ;;
@@ -17,6 +20,6 @@ case "$cmd" in
         docker run --rm -t -v .:/var/www/app calcine:2.0-dev composer -- run test "$@"
         ;;
     * )
-        echo RANDOM
+        echo Valid commands are build, calcine, composer, shell, and test
         ;;
 esac

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Calcine\Services\ContentAdaptors;
 
-final class FileContentAdaptorException extends \Exception {}
-
 class FileContentAdaptor implements ContentAdaptorInterface
 {
     public function __construct(private string $rootPath)
@@ -27,8 +25,11 @@ class FileContentAdaptor implements ContentAdaptorInterface
                 continue;
             }
 
-            $path = $fileInfo->getPathname();
-            yield $this->loadFile($path);
+            if ($fileInfo->getExtension() !== 'markdown') {
+                continue;
+            }
+
+            yield $this->loadFile($fileInfo->getPathname());
         }
     }
 
@@ -37,7 +38,7 @@ class FileContentAdaptor implements ContentAdaptorInterface
         $data = [];
 
         if (! ($file = fopen($path, 'r'))) {
-            throw new FileContentAdaptorException("Cannot open $path");
+            throw new ContentAdaptorException("Cannot open $path");
         }
 
         $basepath = basename($path);
@@ -58,7 +59,7 @@ class FileContentAdaptor implements ContentAdaptorInterface
 
             // Parse/validate this header line.
             if (! preg_match('/^([a-zA-Z]+): *(.*)$/', $line, $matches)) {
-                throw new FileContentAdaptorException("Invalid header line in $basepath: '$line'.");
+                throw new ContentAdaptorException("Invalid header line in $basepath: '$line'.");
             }
 
             $name = strtolower($matches[1]);

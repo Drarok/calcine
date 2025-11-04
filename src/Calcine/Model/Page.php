@@ -12,7 +12,7 @@ readonly class Page
     public function __construct(
         public string $title,
         public string $slug,
-        public string $body
+        public string $body,
     ) {
     }
 }

@@ -1,9 +1,10 @@
 <?php
 
-namespace Calcine;
+namespace Calcine\Model;
 
-use Calcine\Post\Tag;
+use Calcine\Model\Tag;
 
+// TODO: This shouldn't be here.
 final class PostParseException extends \Exception {}
 
 readonly class Post
@@ -27,14 +28,19 @@ readonly class Post
         );
     }
 
+    public static function sort(Post $a, Post $b): int
+    {
+        return $a->date->getTimestamp() - $b->date->getTimeStamp();
+    }
+
     private static function makeDate(string $value): \DateTimeInterface
     {
         $dateFormats = [
             'Y-m-d H:i:s',
             'Y-m-d\\TH:i:s',
-            \DateTimeInterface::ATOM, // "Y-m-d\\TH:i:sP"
-            \DateTimeInterface::RFC3339, // "Y-m-d\\TH:i:sP
-            \DateTimeInterface::RFC3339_EXTENDED, // "Y-m-d\\TH:i:s.vP"
+            \DateTimeInterface::ATOM,
+            \DateTimeInterface::RFC3339,
+            \DateTimeInterface::RFC3339_EXTENDED,
         ];
 
         foreach ($dateFormats as $format) {

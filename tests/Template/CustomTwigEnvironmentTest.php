@@ -6,8 +6,8 @@ use PHPUnit\Framework\TestCase;
 use Twig\Extension\StringLoaderExtension;
 use Twig\Loader\FilesystemLoader as TwigFileLoader;
 
-use Calcine\Post;
-use Calcine\Post\Tag;
+use Calcine\Model\Post;
+use Calcine\Model\Tag;
 use Calcine\Template\CustomTwigEnvironment;
 
 class CustomTwigEnvironmentTest extends TestCase

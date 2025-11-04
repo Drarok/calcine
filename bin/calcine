@@ -16,7 +16,7 @@ define('CALCINE_ROOT', realpath(__DIR__ . '/..'));
 
 $commands = [
     'build',
-    'new-post',
+    'help',
 ];
 
 $args = array_slice($argv, 1);
