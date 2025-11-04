@@ -13,6 +13,11 @@
             "Calcine\\": "src/Calcine"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Calcine\\Tests\\": "tests"
+        }
+    },
     "config": {
         "platform": {
             "php": "8.2"

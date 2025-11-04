@@ -8,9 +8,6 @@ use Calcine\Services\ContentProvider;
 use Calcine\Services\ContentProviderInterface;
 use Calcine\Tests\Mocks\MockContentAdaptor;
 
-// TODO: Find out why this isn't covered by the autoloader.
-require __DIR__ . '/../Mocks/MockContentAdaptor.php';
-
 final class ContentProviderTest extends TestCase
 {
     private ?MockContentAdaptor $pagesAdaptor = null;

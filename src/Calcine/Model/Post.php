@@ -4,9 +4,6 @@ namespace Calcine\Model;
 
 use Calcine\Model\Tag;
 
-// TODO: This shouldn't be here.
-final class PostParseException extends \Exception {}
-
 readonly class Post
 {
     public static function fromJson(array $json): Post
@@ -49,7 +46,7 @@ readonly class Post
             }
         }
 
-        throw new PostParseException('Invalid date: ' . $value);
+        throw new ParseException('Invalid date: ' . $value);
     }
 
     public function __construct(
@@ -71,7 +68,7 @@ readonly class Post
         }
 
         if ($errors) {
-            throw new PostParseException('Invalid data: ' . implode(', ', $errors));
+            throw new ParseException('Invalid data: ' . implode(', ', $errors));
         }
     }
 }

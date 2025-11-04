@@ -8,8 +8,6 @@ use Calcine\Config\ConfigParser;
 use Calcine\Services\ContentProvider;
 use Calcine\Tests\Mocks\MockBasicHTTPClient;
 
-require(__DIR__ . '/../Mocks/MockBasicHTTPClient.php'); // TODO: Remove?
-
 class ConfigParserTest extends TestCase
 {
     private MockBasicHTTPClient $http;

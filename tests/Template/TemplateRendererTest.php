@@ -11,39 +11,8 @@ use Calcine\Model\Tag;
 use Calcine\Path;
 use Calcine\Services\ContentProviderInterface;
 use Calcine\Template\TemplateRenderer;
+use Calcine\Tests\Mocks\MockContentProvider;
 use Calcine\User;
-
-final class MockContentProvider implements ContentProviderInterface
-{
-    public string $title = 'title';
-
-    public string $description = 'description';
-
-    public array $pages = [];
-
-    public array $posts = [];
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getPages(): array
-    {
-        return $this->pages;
-    }
-
-    public function getPosts(): array
-    {
-        return $this->posts;
-    }
-
-}
 
 class TemplateRendererTest extends TestCase
 {
@@ -69,7 +38,7 @@ class TemplateRendererTest extends TestCase
             return;
         }
 
-        // shell_exec('rm -rf ' . escapeshellarg($this->webPath));
+        shell_exec('rm -rf ' . escapeshellarg($this->webPath));
     }
 
     public function testCopyAssetsFailure()
