@@ -2,7 +2,7 @@ name: Calcine CI
 
 on:
   push:
-    branches: [ "develop", "feature/php-8" ]
+    branches: [ "develop", "feature/php-8", "feature/add-page-support" ]
   pull_request:
     branches: [ "develop" ]
 
