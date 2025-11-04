@@ -6,9 +6,6 @@ namespace Calcine\Strapi;
 
 final class StrapiClient implements StrapiClientInterface
 {
-    private const string TYPE_PAGES = 'pages';
-    private const string TYPE_POSTS = 'posts';
-
     public function __construct(
         private BasicHTTPClientInterface $http,
         private string $rootURL
