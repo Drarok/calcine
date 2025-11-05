@@ -8,8 +8,8 @@ use Calcine\Model\Page;
 use Calcine\Path;
 use Calcine\Model\Post;
 use Calcine\Model\Tag;
+use Calcine\Model\User;
 use Calcine\Services\ContentProviderInterface;
-use Calcine\User;
 
 use Twig\Loader\FilesystemLoader as TwigFileLoader;
 

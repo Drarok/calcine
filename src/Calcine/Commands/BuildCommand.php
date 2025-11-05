@@ -1,17 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Commands;
 
 use Bramus\Ansi\Ansi;
-use Calcine\CLI\AnsiWrapper;
 use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
+use Calcine\CLI\AnsiWrapper;
+use Calcine\Model\User;
 use Calcine\Path;
 use Calcine\Template\TemplateRenderer;
-use Calcine\User;
 
 class BuildCommand extends BaseCommand
 {
-    public function execute(array $args, Ansi $ansi)
+    public function execute(array $args, Ansi $ansi): void
     {
         $ansi = new AnsiWrapper($ansi);
 

@@ -8,11 +8,11 @@ use Calcine\Model\BuildStats;
 use Calcine\Model\Page;
 use Calcine\Model\Post;
 use Calcine\Model\Tag;
+use Calcine\Model\User;
 use Calcine\Path;
 use Calcine\Services\ContentProviderInterface;
 use Calcine\Template\TemplateRenderer;
 use Calcine\Tests\Mocks\MockContentProvider;
-use Calcine\User;
 
 class TemplateRendererTest extends TestCase
 {

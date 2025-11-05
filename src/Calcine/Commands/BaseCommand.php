@@ -9,7 +9,7 @@ use Calcine\Config\ConfigParser;
 
 abstract class BaseCommand
 {
-    abstract public function execute(array $args, Ansi $ansi);
+    abstract public function execute(array $args, Ansi $ansi): void;
 
     protected ConfigParser $config;
 

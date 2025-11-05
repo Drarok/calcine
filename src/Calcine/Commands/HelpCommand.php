@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Commands;
 
@@ -10,7 +10,7 @@ use Calcine\Template\TemplateRenderer;
 
 class HelpCommand extends BaseCommand
 {
-    public function execute(array $args, Ansi $ansi)
+    public function execute(array $args, Ansi $ansi): void
     {
         $ansi->text('HelpCommand: TODO');
         $ansi->lf();

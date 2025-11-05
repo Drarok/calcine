@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Calcine\Strapi;
 
@@ -39,11 +37,6 @@ final class StrapiClient implements StrapiClientInterface
             $post['tags'] = array_map($unwrapTag, $post['tags']);
             yield $post;
         }
-    }
-
-    private function unwrapTag(array $tag): string
-    {
-        return $tag['name'];
     }
 
     private function fetch(

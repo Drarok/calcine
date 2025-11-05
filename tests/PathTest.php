@@ -10,19 +10,19 @@ use Calcine\Path;
 class PathTest extends TestCase
 {
     #[DataProvider('joinDataProvider')]
-    public function testJoin($expected)
+    public function testJoin($expected, ...$args)
     {
-        $params = array_slice(func_get_args(), 1);
-        $actual = Path::join(...$params);
+        $actual = Path::join(...$args);
         $this->assertEquals($expected, $actual);
     }
 
     public static function joinDataProvider()
     {
-        return array(
-            array('/usr/local/bin/php', '/usr', 'local', 'bin/', 'php'),
-            array('/usr/local/bin/php', '/usr', 'local', 'bin/', 'php/'),
-            array('/usr/local/bin/php', '/usr', '/local/', 'bin/', 'php/'),
-        );
+        return [
+            [''],
+            ['/usr/local/bin/php', '/usr', 'local', 'bin/', 'php'],
+            ['/usr/local/bin/php', '/usr', 'local', 'bin/', 'php/'],
+            ['/usr/local/bin/php', '/usr', '/local/', 'bin/', 'php/'],
+        ];
     }
 }

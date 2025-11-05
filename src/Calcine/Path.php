@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine;
 
@@ -6,24 +6,19 @@ abstract class Path
 {
     /**
      * Join together all parameters with a directory separator.
-     *
-     * @return string
      */
-    public static function join()
+    public static function join(string ...$args): string
     {
+        if (!$args) {
+            return '';
+        }
+
+        $first = rtrim(array_shift($args), '\\/');
+        $rest = array_map(fn ($s) => trim($s, '\\/'), $args);
+
         return implode(
             DIRECTORY_SEPARATOR,
-            array_map(
-                function ($k, $v) {
-                    if ($k === 0) {
-                        return rtrim($v, '/\\');
-                    } else {
-                        return trim($v, '/\\');
-                    }
-                },
-                array_keys(func_get_args()),
-                func_get_args()
-            )
+            [$first, ...$rest]
         );
     }
 }
