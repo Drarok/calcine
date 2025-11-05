@@ -7,19 +7,17 @@
     <time datetime="{{ post.date|date(constant('DATE_RFC3339')) }}">{{ post.date|date('F jS, Y') }}</time>
 
     <div class="blog-post-tags">
-        {% if tags %}
-            {% for tag in post.tags %}
-                <a class="label label-primary" href="/tags/{{ tag.slug ~ '.html' }}">{{ tag.name }}</a>
-            {% endfor %}
-        {% endif %}
+        {% for tag in post.tags -%}
+            <a class="label label-primary" href="/tags/{{ tag.slug ~ '.html' }}">{{ tag.name }}</a>
+        {% endfor %}
     </div>
 
     <div class="blog-post-body">
-        {% if link is defined and link %}
-            {{ post.renderedShortBody|raw }}
+        {%- if link is defined and link %}
+            {{- post.body|markdown_to_html|shorten_post_body }}
             <a href="/{{ post.date|date('Y/m/d') ~ '/' ~ post.slug ~ '.html' }}">Read more&hellip;</a>
         {% else %}
-            {{ post.renderedBody|raw }}
+            {{- post.body|markdown_to_html -}}
         {% endif %}
     </div>
 </div>

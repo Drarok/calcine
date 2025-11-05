@@ -1,0 +1,9 @@
+.git
+.github
+.gitignore
+Dockerfile
+README.markdown
+generateTestFiles.php
+/scripts
+/tmp
+/vendor

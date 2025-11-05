@@ -1,61 +1,79 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Commands;
 
 use Bramus\Ansi\Ansi;
 use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
+use Calcine\CLI\AnsiWrapper;
+use Calcine\Model\User;
 use Calcine\Path;
-use Calcine\SiteBuilder;
-use Calcine\Template\Engine\EngineFactory;
 use Calcine\Template\TemplateRenderer;
-use Calcine\User;
 
 class BuildCommand extends BaseCommand
 {
-    public function execute(array $args, Ansi $ansi)
+    public function execute(array $args, Ansi $ansi): void
     {
+        $ansi = new AnsiWrapper($ansi);
+
         $theme = $this->config->get('site.theme');
+        $webPath = $this->config->get('web.path');
 
         foreach ($args as $arg) {
             list($key, $value) = explode('=', $arg, 2);
-            if ($key === 'theme') {
+            if ($key === '--theme') {
                 $theme = $value;
+            } elseif ($key === '--web-path') {
+                $webPath = $value;
             }
         }
 
-        $ansi->color([SGR::COLOR_FG_GREEN]);
-        $ansi->text('Building with theme \'' . $theme . '\'')->lf();
-
-        $renderer = new TemplateRenderer(
-            new User($this->config->get('user.name'), $this->config->get('user.email')),
-            Path::join(CALCINE_ROOT, 'app', 'templates'),
-            $this->config->get('web.path')
-        );
-        $renderer->setTheme($theme)
-            ->setGlobal('title', $this->config->get('site.title'))
-            ->setGlobal('description', $this->config->get('site.description'))
+        $ansi
+            ->pushStyle(SGR::COLOR_FG_GREEN)
+            ->text('Building with theme ')
+            ->text("'$theme'", SGR::STYLE_BOLD)
+            ->text(' into ')
+            ->text("'$webPath'", SGR::STYLE_BOLD)
+            ->lf()
         ;
 
-        $site = new SiteBuilder(
-            EngineFactory::createInstance($this->config->get('posts.format')),
-            $renderer,
-            $this->config->get('posts.path')
+        $content = $this->config->makeContentProvider();
+
+        $user = new User(
+            $this->config->get('user.name'),
+            $this->config->get('user.email'),
         );
 
-        $stats = $site->build();
+        $renderer = new TemplateRenderer(
+            $content,
+            $user,
+            Path::join(CALCINE_ROOT, 'app', 'templates'),
+            $webPath,
+            $theme,
+        );
 
-        $ansi->text(sprintf(
-            'Built %d %s.',
-            $stats['posts'],
-            $stats['posts'] == 1 ? 'post' : 'posts'
-        ));
-        $ansi->lf();
+        $startTime = microtime(true);
+        $stats = $renderer->build();
+        $timeTaken = sprintf('%.3fs', microtime(true) - $startTime);
 
-        $ansi->text(sprintf(
-            'Built %d %s.',
-            $stats['indexes'],
-            $stats['indexes'] == 1 ? 'index' : 'indexes'
-        ));
-        $ansi->lf();
+        $ansi->text('Built ');
+
+        $outputs = [
+            $stats->formatPosts(),
+            $stats->formatPages(),
+            $stats->formatTags(),
+        ];
+        $lastIdx = count($outputs) - 1;
+        foreach ($outputs as $idx => $text) {
+            $ansi->text($text, SGR::STYLE_BOLD);
+            if ($idx < $lastIdx) {
+                $ansi->text(', ');
+            }
+        }
+
+        $ansi
+            ->text(' in ')
+            ->text($timeTaken, SGR::COLOR_FG_YELLOW)
+            ->lf()
+        ;
     }
 }

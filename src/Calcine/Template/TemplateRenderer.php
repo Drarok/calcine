@@ -1,109 +1,99 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Template;
 
-use Calcine\User;
+use Calcine\Model\ArchivePage;
+use Calcine\Model\BuildStats;
+use Calcine\Model\Page;
 use Calcine\Path;
-use Calcine\Post;
-use Calcine\Post\Tag;
+use Calcine\Model\Post;
+use Calcine\Model\Tag;
+use Calcine\Model\User;
+use Calcine\Services\ContentProviderInterface;
 
-use Twig_Environment;
-use Twig_Loader_Filesystem;
+use Twig\Loader\FilesystemLoader as TwigFileLoader;
 
-class TemplateRenderer
+class TemplateRenderer implements TemplateRendererInterface
 {
-    /**
-     * Path to the templates.
-     *
-     * @var string
-     */
-    protected $templatesPath;
+    private CustomTwigEnvironment $twig;
 
-    /**
-     * Path to the web directory.
-     *
-     * @var string
-     */
-    protected $webPath;
+    private string $theme;
 
-    /**
-     * Twig environment.
-     *
-     * @var Twig_Environment
-     */
-    protected $twig;
-
-    /**
-     * Theme name.
-     *
-     * @var string
-     */
-    protected $theme = 'default';
-
-    /**
-     * Global data passed to all templates.
-     *
-     * @var array
-     */
-    protected $globalData = array(
+    private array $globals = [
         'user'        => null,
-        'title'       => '',
-        'description' => '',
-        'tags'        => array(),
-        'archives'    => array(),
-    );
+        'tags'        => [], // Array<Tag>
+        'archives'    => [], // Array<ArchivePage>
+        'pages'       => [], // Array<Page>
+    ];
 
-    /**
-     * Constructor.
-     *
-     * @param User   $user          User object.
-     * @param string $templatesPath Templates path.
-     * @param string $webPath       Web path.
-     */
-    public function __construct(User $user, $templatesPath, $webPath)
-    {
+    public function __construct(
+        private ContentProviderInterface $content,
+        User $user,
+        private string $templatesPath,
+        private string $webPath,
+        string $theme = 'default',
+    ) {
         $this->setGlobal('user', $user);
-        $this->templatesPath = $templatesPath;
-        $this->webPath = $webPath;
 
-        $loader = new Twig_Loader_Filesystem();
-        $this->twig = new Twig_Environment($loader);
+        $twigLoader = new TwigFileLoader();
+        $this->twig = new CustomTwigEnvironment($twigLoader);
 
-        $this->setTheme('default');
+        $this->setTheme($theme);
     }
 
     /**
-     * Setter the theme.
-     *
-     * @param string $theme Theme name.
-     *
-     * @return $this
+     * Build the site, returning how many pages of what type were built.
      */
-    public function setTheme($theme)
+    public function build(): BuildStats
+    {
+        $pages = $this->content->getPages();
+        $this->setGlobal('pages', $pages);
+
+        $posts = $this->content->getPosts();
+
+        $tags = $this->collectTags($posts);
+        $this->setGlobal('tags', $tags);
+
+        $archives = $this->collectArchives($posts);
+        $this->setGlobal('archives', $archives);
+
+        $this->renderTags($tags);
+        $this->renderArchives($archives);
+
+        foreach ($pages as $page) {
+            $this->renderPage($page);
+        }
+
+        foreach ($posts as $post) {
+            $this->renderPost($post);
+        }
+
+        $this->renderSiteIndex($posts);
+
+        $this->copyAssets();
+
+        return new BuildStats(
+            count($pages),
+            count($posts),
+            count($tags),
+        );
+    }
+
+    private function setTheme(string $theme): self
     {
         $this->theme = $theme;
 
-        $paths = array(
+        $paths = [
             Path::join($this->templatesPath, $theme),
-        );
+        ];
 
-        if ($theme != 'default') {
+        if ($theme !== 'default') {
             $paths[] = Path::join($this->templatesPath, 'default');
         }
 
         $this->twig->getLoader()->setPaths($paths);
 
         return $this;
-    }
-
-    /**
-     * Getter for theme.
-     *
-     * @return string
-     */
-    public function getTheme()
-    {
-        return $this->theme;
     }
 
     /**
@@ -114,49 +104,98 @@ class TemplateRenderer
      *
      * @return $this
      */
-    public function setGlobal($key, $value)
+    private function setGlobal($key, $value): self
     {
-        $this->globalData[$key] = $value;
+        $this->globals[$key] = $value;
         return $this;
     }
 
     /**
-     * Gets a global.
-     *
-     * @param string $key Global name.
-     *
-     * @return mixed
+     * Collect all the tags, with their posts attached.
      */
-    public function getGlobal($key)
+    private function collectTags(array $posts): array
     {
-        return array_key_exists($key, $this->globalData) ? $this->globalData[$key] : null;
+        $tags = [];
+        $postsByTag = [];
+
+        foreach ($posts as $post) {
+            foreach ($post->tags as $tag) {
+                $name = $tag->name;
+
+                if (!array_key_exists($name, $tags)) {
+                    $tags[$name] = $tag;
+                }
+
+                if (!array_key_exists($name, $postsByTag)) {
+                    $postsByTag[$name] = [];
+                }
+
+                $postsByTag[$name][] = $post;
+            }
+        }
+
+        $result = [];
+        foreach ($postsByTag as $name => $posts) {
+            $result[] = new Tag($name, $posts);
+        }
+        return $result;
+    }
+
+    /**
+     * Collect all the posts, keyed on `date('Y/m')`, and in date order.
+     */
+    private function collectArchives(array $posts): array
+    {
+        $archives = [];
+        foreach ($posts as $post) {
+            $key = $post->date->format('Y/m');
+
+            if (! array_key_exists($key, $archives)) {
+                $archives[$key] = [
+                    'name'  => $post->date->format('F Y'),
+                    'posts' => [],
+                ];
+            }
+
+            $archives[$key]['posts'][] = $post;
+        }
+
+        // Ensure archives are in date order.
+        ksort($archives);
+
+        // Ensure posts within each archive are ordered.
+        $result = [];
+        foreach ($archives as $slug => $data) {
+            $name = $data['name'];
+            $posts = $data['posts'];
+            usort($posts, [Post::class, 'sort']);
+            $result[] = new ArchivePage($name, $slug, $posts);
+        }
+
+        return $result;
     }
 
     /**
      * Copy template assets to the web directory.
      *
-     * @return void
-     *
      * @throws \Exception when asset path cannot be created
      */
-    public function copyAssets()
+    public function copyAssets(): void
     {
-        $theme = $this->getTheme();
+        $assetTypes = ['css', 'fonts', 'img', 'js'];
 
-        $assetTypes = array('css', 'fonts', 'img', 'js');
-
-        $assetsRootPaths = array();
+        $assetsRootPaths = [];
         foreach ($assetTypes as $type) {
-            $assetsRootPaths[] = array(
-                Path::join(realpath($this->templatesPath), $theme, $type),
+            $assetsRootPaths[] = [
+                Path::join(realpath($this->templatesPath), $this->theme, $type),
                 $type,
-            );
+            ];
 
-            if ($theme !== 'default') {
-                $assetsRootPaths[] = array(
+            if ($this->theme !== 'default') {
+                $assetsRootPaths[] = [
                     Path::join(realpath($this->templatesPath), 'default', $type),
                     $type
-                );
+                ];
             }
         }
 
@@ -198,37 +237,45 @@ class TemplateRenderer
     }
 
     /**
-     * Render a post to the web directory, returning its pathname.
-     *
-     * @param Post $post Post object.
-     *
-     * @return void
+     * Render a post to its web destination.
      */
-    public function renderPost(Post $post)
+    private function renderPost(Post $post): void
     {
-        $data = array(
+        $data = [
             'post' => $post,
-        );
+        ];
 
         $postPathname = Path::join(
             $this->webPath,
-            $post->getDate()->format('Y/m/d'),
-            $post->getSlug() . '.html'
+            $post->date->format('Y/m/d'),
+            $post->slug . '.html'
         );
 
         $this->render('post_page.html.twig', $data, $postPathname);
     }
 
     /**
-     * Render the tags index and tag pages.
-     *
-     * @return void
+     * Render a page to its web destination.
      */
-    public function renderTags()
+    private function renderPage(Page $page): void
     {
-        $data = array(
+        $data = [
+            'page' => $page,
+        ];
+
+        $pagePathname = Path::join($this->webPath, 'pages', $page->slug . '.html');
+
+        $this->render('page.html.twig', $data, $pagePathname);
+    }
+
+    /**
+     * Render the tags index and pages.
+     */
+    private function renderTags(array $tags): void
+    {
+        $data = [
             'route' => 'tags',
-        );
+        ];
 
         $tagsPathname = Path::join(
             $this->webPath,
@@ -238,13 +285,12 @@ class TemplateRenderer
 
         $this->render('tags.html.twig', $data, $tagsPathname);
 
-        // TODO: Using a global 'tags' is pretty hacky, this should be formalised.
         /** @var Tag $tag */
-        foreach ($this->getGlobal('tags') as $tag) {
-            $data = array(
+        foreach ($tags as $tag) {
+            $data = [
                 'route' => 'tag',
                 'tag'   => $tag,
-            );
+            ];
 
             $tagPathname = Path::join($this->webPath, 'tags', $tag->getSlug() . '.html');
 
@@ -254,39 +300,30 @@ class TemplateRenderer
 
     /**
      * Render the archive pages.
-     *
-     * @return void
      */
-    public function renderArchives()
+    private function renderArchives(array $archives): void
     {
-        // TODO: Using the global for this feels hacky.
-        foreach ($this->getGlobal('archives') as $path => $archive) {
-            $data = array(
+        foreach ($archives as $archive) {
+            $data = [
                 'route'   => 'archive',
                 'archive' => $archive,
-            );
+            ];
 
-            $archivePathname = Path::join($this->webPath, $path, 'index.html');
+            $archivePathname = Path::join($this->webPath, $archive->slug, 'index.html');
 
             $this->render('archive.html.twig', $data, $archivePathname);
         }
     }
 
     /**
-     * Render the site index.
-     *
-     * This will display the 1st 30 posts for now.
-     *
-     * @param array $posts Array of Post objects.
-     *
-     * @return void
+     * Render the site index, displaying the first 30 posts for now.
      */
-    public function renderSiteIndex(array $posts)
+    private function renderSiteIndex(array $posts): void
     {
-        $data = array(
+        $data = [
             'posts' => array_slice($posts, 0, 30),
             'route' => 'index',
-        );
+        ];
 
         $indexPathname = Path::join($this->webPath, 'index.html');
 
@@ -296,17 +333,12 @@ class TemplateRenderer
     /**
      * Render a Twig template to a file.
      *
-     * @param string $name     Name of the template.
-     * @param array  $data     View data.
-     * @param string $pathname Full pathname to write the file to.
-     *
-     * @return void
-     *
      * @throws \Exception when template destination cannot be created
      */
-    protected function render($name, $data, $pathname)
+    private function render(string $name, array $data, string $pathname): void
     {
-        $template = $this->twig->render($name, array_merge($this->globalData, $data));
+        $data = array_merge($this->globals, $data);
+        $template = $this->twig->render($name, $data);
 
         if (! is_dir($dirname = dirname($pathname))) {
             $level = error_reporting(0);

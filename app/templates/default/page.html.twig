@@ -1,0 +1,22 @@
+{% extends 'template.html.twig' %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+    <div class="blog-post">
+        {% if link is defined and link %}
+            <h3><a href="/pages/{{ page.slug }}.html">{{ page.title }}</a></h3>
+        {% else %}
+            <h3>{{ page.title }}</h3>
+        {% endif %}
+
+        <div class="blog-post-body">
+            {%- if link is defined and link %}
+                {{- page.body|markdown_to_html|shorten_post_body }}
+                <a href="/pages/{{ page.slug }}.html">Read more&hellip;</a>
+            {% else %}
+                {{- page.body|markdown_to_html -}}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

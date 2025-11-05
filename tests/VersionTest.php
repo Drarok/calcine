@@ -1,14 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Calcine\Version;
 
-class VersionTest extends \PHPUnit_Framework_TestCase
+class VersionTest extends TestCase
 {
     public function testGetters()
     {
         $version = Version::getVersion();
-        $this->assertRegExp('/^\d+\.\d+\.\d+$/', $version);
+        $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', $version);
     }
 }

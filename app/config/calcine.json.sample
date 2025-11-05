@@ -3,9 +3,16 @@
         "name": "Your Name",
         "email": "you@yourdomain.tld"
     },
-    "posts": {
-        "format": "markdown",
-        "path": "app/posts"
+    "content": {
+        "adaptor": "files",
+        "path": "app"
+    },
+    "or__content": {
+        "adaptor": "strapi",
+        "headers": [
+            "Authorization: bearer abc123"
+        ],
+        "root_url": "http://127.0.0.1:1337/api"
     },
     "web": {
         "path": "web"

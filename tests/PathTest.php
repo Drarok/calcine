@@ -1,28 +1,28 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Calcine\Tests;
 
-class PathTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
+
+use Calcine\Path;
+
+class PathTest extends TestCase
 {
-    /**
-     * Test the join method.
-     *
-     * @return void
-     *
-     * @dataProvider joinDataProvider
-     */
-    public function testJoin($expected)
+    #[DataProvider('joinDataProvider')]
+    public function testJoin($expected, ...$args)
     {
-        $params = array_slice(func_get_args(), 1);
-        $this->assertEquals($expected, call_user_func_array('Calcine\\Path::join', $params));
+        $actual = Path::join(...$args);
+        $this->assertEquals($expected, $actual);
     }
 
-    public function joinDataProvider()
+    public static function joinDataProvider()
     {
-        return array(
-            array('/usr/local/bin/php', '/usr', 'local', 'bin/', 'php'),
-            array('/usr/local/bin/php', '/usr', 'local', 'bin/', 'php/'),
-            array('/usr/local/bin/php', '/usr', '/local/', 'bin/', 'php/'),
-        );
+        return [
+            [''],
+            ['/usr/local/bin/php', '/usr', 'local', 'bin/', 'php'],
+            ['/usr/local/bin/php', '/usr', 'local', 'bin/', 'php/'],
+            ['/usr/local/bin/php', '/usr', '/local/', 'bin/', 'php/'],
+        ];
     }
 }
