@@ -1,6 +1,10 @@
-# Calcine [![Build Status](https://travis-ci.org/Drarok/calcine.svg?branch=develop)](https://travis-ci.org/Drarok/calcine)
+# Calcine
 
-Calcine is a "baked" blog generator, using Markdown files to produce a site using only static assets.
+Calcine is a static site generator; it takes Markdown input and produces a web site composed of static files.
+
+It uses the [CommonMark](https://commonmark.thephpleague.com/2.7/) dialect of Markdown, and has these extensions enabled:
+* [Attributes](https://commonmark.thephpleague.com/2.7/extensions/attributes/)
+* [Footnotes](https://commonmark.thephpleague.com/2.7/extensions/footnotes/)
 
 ## Quick start
 
